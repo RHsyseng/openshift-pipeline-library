@@ -33,14 +33,8 @@ def call(Closure body) {
         openshift.withCluster() {
             openshift.withProject() {
                 try {
-                    /* Arguments to openshift.run must be expanded using the spread operator
-                       which does not work with CPS.  Created static function in Utils to
-                       get around this limitation.
 
-                       This will not work:
-                       openshift.run(args)
-                     */
-                    new Utils().openShiftRun(openshift, args)
+                    openshift.run(args)
                     pod = openshift.selector("pod/${config.branch}")
 
                     timeout(10) {
