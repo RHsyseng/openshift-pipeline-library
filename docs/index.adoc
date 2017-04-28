@@ -1,0 +1,96 @@
+= OpenShift Pipeline Library 
+:toc:
+
+
+[[FunctionVariables]]
+=== Function Variables
+
+==== newBuildOpenShift
+
+Starts a `oc new-build` process and monitors while the related objects
+are executing.
+
+.Returned HashMap
+[source,java]
+----
+[names: newBuild.names(), buildConfigName: buildConfigName]
+----
+
+.Example
+[source,java]
+....
+def newBuild = newBuildOpenShift() {
+    url = scmUrl                                    <1>
+    branch = scmRef                                 <2>
+    contextDir = path                               <3>
+    deleteBuild = false                             <4>
+    randomName = true                               <5>
+    image = "docker.io/aweiteka/playbook2image"     <6>
+    imageStream = "project/isname"                  <7>
+}
+....
+<1> Create a build config from a remote repository.
+<2> Create a build config from a remote repository using a specific branch.
+<3> The directory in the repository to be used for the build
+<4> Delete build config and related objects after complete.
+<5> Generate a random name (UUID) for the build config objects.
+<6> External registry location for a container image.
+<7> Name of an image stream to be used as a builder.
+
+[NOTE]
+====
+Do not use `image` and `imageStream` options together.
+====
+
+
+==== runOpenShift
+Starts a `oc run` process and monitors the pod object while executing.  Current expectations for this function is that it will do some process and exit.  The exit code will determine success or failure.
+
+.Example
+[source,java]
+....
+runOpenShift {
+    deletePod = true                <1>
+    branch = scmRef                 <2>
+    image = dockerImageRepository   <3>
+    env = ["foo=goo"]               <4>
+}
+....
+<1> Delete pod after execution
+<2> Name of the pod
+<3> Docker image URL
+<4> Environmental variables that the pod requires to run.
+
+==== getImageStreamRepo
+Both the newBuildOpenShift and runOpenShift require either the ImageStream or Docker image repoistory url. This function returns both as a HashMap for a given ImageStream name.
+
+.Returned HashMap
+[source,java]
+----
+[dockerImageRepository: is.status.dockerImageRepository,
+                 imageStream: imageStream]
+----
+
+.Example
+[source,java]
+....
+isRepo = getImageStreamRepo(newBuild.buildConfigName)
+....
+
+
+[[Utils]]
+=== Utils
+
+==== createJobParameters(HashMap configMap)
+Converts an OpenShift ConfigMap to a List of ParameterValues which can be used in a parameterized Jenkins Job.
+
+==== getGitHubPR(String login, String oauthAccessToken, String changeUrl)
+Returns the originating repository and branch name of a pull request.
+
+==== configureRootUrl(String url)
+Sets the Jenkins Location Configuration URL in an ephemeral Jenkins instance.
+
+==== createCredentialsFromOpenShift(HashMap secret, String id)
+From an OpenShift secret creates Jenkins credentials to be used in a Jenkins Job or plugin.
+
+
