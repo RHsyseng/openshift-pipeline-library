@@ -1,0 +1,6 @@
+FROM registry.access.redhat.com/rhel7 
+
+# This is just a temp example...
+RUN yum install -y vim wget
+
+CMD tail -f /dev/null
