@@ -25,7 +25,3 @@ multibranches (pull requests).
 6. Add the pipeline `oc create -f https://raw.githubusercontent.com/RHsyseng/openshift-pipeline-library/master/jenkins/openshift/pipeline.yaml`
 7. And finally start the pipeline `oc start-build createcred-pipeline`
 
-
-#### Note
-This project is being tested by the `Jenkinsfile` in my OpenShift environment.
-The SSL certificates are from Let's Encrypt using the [openshift-acme project](https://github.com/tnozicka/openshift-acme) to generate them.
