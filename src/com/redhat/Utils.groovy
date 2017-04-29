@@ -7,6 +7,9 @@ import com.cloudbees.groovy.cps.NonCPS
 import com.cloudbees.plugins.credentials.impl.*
 import com.cloudbees.plugins.credentials.*
 import com.cloudbees.plugins.credentials.domains.*
+import jenkins.model.*
+import jenkins.model.Jenkins
+import hudson.security.*
 import java.util.logging.Level
 import java.util.logging.Logger
 import jenkins.model.JenkinsLocationConfiguration
@@ -116,5 +119,32 @@ String createCredentials(String id = null, String username, String password, Str
     catch (all) {
         Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
         throw all
+    }
+}
+
+
+@NonCPS 
+Boolean setAnonPermBuildStatusIcon() {
+
+    def permissions = ["hudson.model.Item.ViewStatus", "hudson.model.View.Read"]
+    def sid = "anonymous"
+
+    return setJenkinsPermissions(permissions, sid)
+}
+
+//https://wiki.jenkins-ci.org/display/JENKINS/Grant+Cancel+Permission+for+user+and+group+that+have+Build+permission
+
+@NonCPS
+Boolean setJenkinsPermissions(def perms, def sid) {
+    try {
+        perms.each {
+            Jenkins.instance.authorizationStrategy.add(Permission.fromId(it), sid)
+       }
+       Jenkins.instance.save()
+       return true
+    }
+    catch (all) {
+        Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
+        return false
     }
 }
