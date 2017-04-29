@@ -32,6 +32,11 @@ node {
             id = utils.createCredentialsFromOpenShift(secret, "github") 
         }
     }
+
+    stage('Configure Anonymous User') {
+        utils.setAnonPermBuildStatusIcon()
+    }
+
     stage('Run Seed Job') {            
         build job: 'seed', parameters: seedJobParameters
     }
