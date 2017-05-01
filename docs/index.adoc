@@ -2,6 +2,136 @@
 :toc:
 
 
+== Focus / Goals
+
+* Show the benefits of using Jenkins and OpenShift together 
+* The Jenkins master should be ephemeral:
+** Configuration stored in OpenShift
+** Pipeline, Jobs and libraries in source control
+* GitHub Organizational level and project pull request testing
+
+[[GettingStarted]]
+== Getting Started
+
+=== Installation
+
+
+.Create New Project
+[source,bash]
+....
+oc new-project <project-name>
+....
+
+.Add Template to Project
+[source,bash]
+....
+oc create -f https://raw.githubusercontent.com/RHsyseng/openshift-pipeline-library/master/jenkins/openshift/template.yaml
+....
+
+At this point you will need to create a https://github.com/settings/tokens/new?scopes=repo,read:user,user:email[GitHub token] to include when processing the template.
+
+.Process Template
+[source,bash]
+....
+oc new-app --template docker-image-testing \
+  -p JENKINS_ORG_FOLDER_NAME=RHsyseng \
+  -p JENKINS_GITHUB_OWNER=RHsyseng-user \
+  -p JENKINS_GITHUB_REPO=openshift-client-library \
+  -p JENKINS_GITHUB_CRED_ID=github \
+  -p GITHUB_USERNAME=RHsyseng-user \
+  -p GITHUB_TOKEN=token
+....
+
+.Add Jenkins to the project
+[source,bash]
+....
+oc new-app --template jenkins-ephemeral -p NAMESPACE=$(oc project -q) -p MEMORY_LIMIT=2Gi
+....
+
+
+.Add the pipeline
+[source,bash]
+....
+oc create -f https://raw.githubusercontent.com/RHsyseng/openshift-pipeline-library/master/jenkins/openshift/pipeline.yaml
+....
+
+.Start the build (pipeline)
+[source,bash]
+....
+oc start-build createcred-pipeline
+....
+
+
+=== How does this work?
+
+==== Source to Image Jenkins
+
+The Jenkins image is S2I enabled which is a huge benefit to this project because it requires additional items
+to be successful.  This includes:
+
+* Additional plugins:
+** OpenShift Jenkins client (master)
+* Jobs:
+** Seed
+** Organizational Folder
+* Configuration:
+** Global Libraries
+** Script approval
+
+
+==== OpenShift
+
+===== ConfigMap
+The `orgfolder` ConfigMap stores the configuration parameters for the seed job. 
+
+===== Secret
+The `github` secret stores the github username and the token.
+
+==== Jobs / Pipeline
+
+===== OpenShift Pipeline
+====== Files
+* `jenkins/jobs/credPipelineJob.groovy`
+* `jenkins/openshift/pipeline.yaml`
+
+====== Steps
+
+1. Configures the Jenkins URL (Manage Jenkins - Configure System - Jenkins Location).  This is required to provide the URL when adding the build status to GitHub.
+2. Create a `List<hudson.model.ParameterValue>` from a OpenShift ConfigMap to be used for seed job.
+3. Create Jenkins credentials from OpenShift secret.  This adds the GitHub username and token to Jenkins for use in GitHub related plugins.
+4. Configure the anonymous user for embedded build status icon.
+5. Finally run the seed job with the parameters is ran to build the Organizational Folder job. 
+
+===== Seed Job 
+====== Files
+
+* `jenkins/configuration/jobs/seed`
+
+====== Details
+This is the https://github.com/jenkinsci/job-dsl-plugin/wiki#getting-started[seed job] that will be executed to create the `orgFolderJob` using the Jenkins Job DSL.
+
+===== Organizational Folder Job DSL
+====== Files
+
+* `jenkins/jobs/orgFolderJob.groovy`
+
+====== Details
+This Job DSL will create a Organizational Folder job configured for:
+
+* GitHub
+* Specific repository owner (or organization)
+* Repository pattern
+* Checkout credentials
+
+===== Jenkinsfile
+====== Files
+* `Jenkinsfile`
+
+====== Details
+This is used for the openshift-pipeline-library project but it can also be used as an example for your own project.
+
+== Library Methods
+
 [[FunctionVariables]]
 === Function Variables
 

@@ -423,13 +423,287 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>OpenShift Pipeline Library</h1>
 <div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#truefocus-goals">Focus / Goals</a></li>
+<li><a href="#GettingStarted">Getting Started</a>
+<ul class="sectlevel2">
+<li><a href="#trueinstallation">Installation</a></li>
+<li><a href="#truehow-does-this-work">How does this work?</a></li>
+</ul>
+</li>
+<li><a href="#truelibrary-methods">Library Methods</a>
 <ul class="sectlevel2">
 <li><a href="#FunctionVariables">Function Variables</a></li>
 <li><a href="#Utils">Utils</a></li>
 </ul>
+</li>
+</ul>
 </div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="truefocus-goals"><a class="anchor" href="#truefocus-goals"></a>Focus / Goals</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Show the benefits of using Jenkins and OpenShift together</p>
+</li>
+<li>
+<p>The Jenkins master should be ephemeral:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Configuration stored in OpenShift</p>
+</li>
+<li>
+<p>Pipeline, Jobs and libraries in source control</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>GitHub Organizational level and project pull request testing</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="GettingStarted"><a class="anchor" href="#GettingStarted"></a>Getting Started</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="trueinstallation"><a class="anchor" href="#trueinstallation"></a>Installation</h3>
+<div class="listingblock">
+<div class="title">Create New Project</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc new-project &lt;project-name&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Add Template to Project</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc create -f https://raw.githubusercontent.com/RHsyseng/openshift-pipeline-library/master/jenkins/openshift/template.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At this point you will need to create a <a href="https://github.com/settings/tokens/new?scopes=repo,read:user,user:email">GitHub token</a> to include when processing the template.</p>
+</div>
+<div class="listingblock">
+<div class="title">Process Template</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc new-app --template docker-image-testing \
+  -p JENKINS_ORG_FOLDER_NAME=RHsyseng \
+  -p JENKINS_GITHUB_OWNER=RHsyseng-user \
+  -p JENKINS_GITHUB_REPO=openshift-client-library \
+  -p JENKINS_GITHUB_CRED_ID=github \
+  -p GITHUB_USERNAME=RHsyseng-user \
+  -p GITHUB_TOKEN=token</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Add Jenkins to the project</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc new-app --template jenkins-ephemeral -p NAMESPACE=$(oc project -q) -p MEMORY_LIMIT=2Gi</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Add the pipeline</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc create -f https://raw.githubusercontent.com/RHsyseng/openshift-pipeline-library/master/jenkins/openshift/pipeline.yaml</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Start the build (pipeline)</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc start-build createcred-pipeline</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truehow-does-this-work"><a class="anchor" href="#truehow-does-this-work"></a>How does this work?</h3>
+<div class="sect3">
+<h4 id="truesource-to-image-jenkins"><a class="anchor" href="#truesource-to-image-jenkins"></a>Source to Image Jenkins</h4>
+<div class="paragraph">
+<p>The Jenkins image is S2I enabled which is a huge benefit to this project because it requires additional items
+to be successful.  This includes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Additional plugins:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>OpenShift Jenkins client (master)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Jobs:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Seed</p>
+</li>
+<li>
+<p>Organizational Folder</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Configuration:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Global Libraries</p>
+</li>
+<li>
+<p>Script approval</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueopenshift"><a class="anchor" href="#trueopenshift"></a>OpenShift</h4>
+<div class="sect4">
+<h5 id="trueconfigmap"><a class="anchor" href="#trueconfigmap"></a>ConfigMap</h5>
+<div class="paragraph">
+<p>The <code>orgfolder</code> ConfigMap stores the configuration parameters for the seed job.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truesecret"><a class="anchor" href="#truesecret"></a>Secret</h5>
+<div class="paragraph">
+<p>The <code>github</code> secret stores the github username and the token.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truejobs-pipeline"><a class="anchor" href="#truejobs-pipeline"></a>Jobs / Pipeline</h4>
+<div class="sect4">
+<h5 id="trueopenshift-pipeline"><a class="anchor" href="#trueopenshift-pipeline"></a>OpenShift Pipeline</h5>
+<div class="sect5">
+<h6 id="truefiles"><a class="anchor" href="#truefiles"></a>Files</h6>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jenkins/jobs/credPipelineJob.groovy</code></p>
+</li>
+<li>
+<p><code>jenkins/openshift/pipeline.yaml</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truesteps"><a class="anchor" href="#truesteps"></a>Steps</h6>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configures the Jenkins URL (Manage Jenkins - Configure System - Jenkins Location).  This is required to provide the URL when adding the build status to GitHub.</p>
+</li>
+<li>
+<p>Create a <code>List&lt;hudson.model.ParameterValue&gt;</code> from a OpenShift ConfigMap to be used for seed job.</p>
+</li>
+<li>
+<p>Create Jenkins credentials from OpenShift secret.  This adds the GitHub username and token to Jenkins for use in GitHub related plugins.</p>
+</li>
+<li>
+<p>Configure the anonymous user for embedded build status icon.</p>
+</li>
+<li>
+<p>Finally run the seed job with the parameters is ran to build the Organizational Folder job.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueseed-job"><a class="anchor" href="#trueseed-job"></a>Seed Job</h5>
+<div class="sect5">
+<h6 id="truefiles-2"><a class="anchor" href="#truefiles-2"></a>Files</h6>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jenkins/configuration/jobs/seed</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truedetails"><a class="anchor" href="#truedetails"></a>Details</h6>
+<div class="paragraph">
+<p>This is the <a href="https://github.com/jenkinsci/job-dsl-plugin/wiki#getting-started">seed job</a> that will be executed to create the <code>orgFolderJob</code> using the Jenkins Job DSL.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueorganizational-folder-job-dsl"><a class="anchor" href="#trueorganizational-folder-job-dsl"></a>Organizational Folder Job DSL</h5>
+<div class="sect5">
+<h6 id="truefiles-3"><a class="anchor" href="#truefiles-3"></a>Files</h6>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jenkins/jobs/orgFolderJob.groovy</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truedetails-2"><a class="anchor" href="#truedetails-2"></a>Details</h6>
+<div class="paragraph">
+<p>This Job DSL will create a Organizational Folder job configured for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>GitHub</p>
+</li>
+<li>
+<p>Specific repository owner (or organization)</p>
+</li>
+<li>
+<p>Repository pattern</p>
+</li>
+<li>
+<p>Checkout credentials</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truejenkinsfile"><a class="anchor" href="#truejenkinsfile"></a>Jenkinsfile</h5>
+<div class="sect5">
+<h6 id="truefiles-4"><a class="anchor" href="#truefiles-4"></a>Files</h6>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Jenkinsfile</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truedetails-3"><a class="anchor" href="#truedetails-3"></a>Details</h6>
+<div class="paragraph">
+<p>This is used for the openshift-pipeline-library project but it can also be used as an example for your own project.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truelibrary-methods"><a class="anchor" href="#truelibrary-methods"></a>Library Methods</h2>
+<div class="sectionbody">
 <div class="sect2">
 <h3 id="FunctionVariables"><a class="anchor" href="#FunctionVariables"></a>Function Variables</h3>
 <div class="sect3">
@@ -590,9 +864,11 @@ are executing.</p>
 </div>
 </div>
 </div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-04-28 14:53:05 EDT
+Last updated 2017-05-01 14:42:33 EDT
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
