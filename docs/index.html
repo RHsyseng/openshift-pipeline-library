@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.5.dev">
+<meta name="generator" content="Asciidoctor 1.5.5">
 <title>OpenShift Pipeline Library</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -17,7 +17,6 @@ audio:not([controls]){display:none;height:0}
 [hidden],template{display:none}
 script{display:none!important}
 html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
-body{margin:0}
 a{background:transparent}
 a:focus{outline:thin dotted}
 a:active,a:hover{outline:0}
@@ -52,7 +51,7 @@ textarea{overflow:auto;vertical-align:top}
 table{border-collapse:collapse;border-spacing:0}
 *,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
 html,body{font-size:100%}
-body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
 a:hover{cursor:pointer}
 img,object,embed{max-width:100%;height:auto}
 object,embed{height:100%}
@@ -64,7 +63,6 @@ img{-ms-interpolation-mode:bicubic}
 .text-center{text-align:center!important}
 .text-justify{text-align:justify!important}
 .hide{display:none}
-body{-webkit-font-smoothing:antialiased}
 img,object,svg{display:inline-block;vertical-align:middle}
 textarea{height:auto;min-height:50px}
 select{width:100%}
@@ -119,13 +117,16 @@ table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:
 table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
 table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
 table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
-body{tab-size:4}
 h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
 h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
 .clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
 .clearfix:after,.float-group:after{clear:both}
-*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
+*:not(pre)>code.nobreak{word-wrap:normal}
+*:not(pre)>code.nowrap{white-space:nowrap}
 pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+em em{font-style:normal}
+strong strong{font-weight:400}
 .keyseq{color:rgba(51,51,51,.8)}
 kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
 .keyseq kbd:first-child{margin-left:0}
@@ -416,7 +417,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .hide-for-print{display:none!important}
 .show-for-print{display:inherit!important}}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
 </head>
 <body class="article">
 <div id="header">
@@ -424,14 +424,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#truefocus-goals">Focus / Goals</a></li>
+<li><a href="#_focus_goals">Focus / Goals</a></li>
 <li><a href="#GettingStarted">Getting Started</a>
 <ul class="sectlevel2">
-<li><a href="#trueinstallation">Installation</a></li>
-<li><a href="#truehow-does-this-work">How does this work?</a></li>
+<li><a href="#_installation">Installation</a></li>
+<li><a href="#_how_does_this_work">How does this work?</a></li>
 </ul>
 </li>
-<li><a href="#truelibrary-methods">Library Methods</a>
+<li><a href="#_library_methods">Library Methods</a>
 <ul class="sectlevel2">
 <li><a href="#FunctionVariables">Function Variables</a></li>
 <li><a href="#Utils">Utils</a></li>
@@ -442,7 +442,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="truefocus-goals"><a class="anchor" href="#truefocus-goals"></a>Focus / Goals</h2>
+<h2 id="_focus_goals">Focus / Goals</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -470,20 +470,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="GettingStarted"><a class="anchor" href="#GettingStarted"></a>Getting Started</h2>
+<h2 id="GettingStarted">Getting Started</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="trueinstallation"><a class="anchor" href="#trueinstallation"></a>Installation</h3>
+<h3 id="_installation">Installation</h3>
 <div class="listingblock">
 <div class="title">Create New Project</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc new-project &lt;project-name&gt;</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">oc new-project &lt;project-name&gt;</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Add Template to Project</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc create -f https://raw.githubusercontent.com/RHsyseng/openshift-pipeline-library/master/jenkins/openshift/template.yaml</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">oc create -f https://raw.githubusercontent.com/RHsyseng/openshift-pipeline-library/master/jenkins/openshift/template.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -492,7 +492,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="title">Process Template</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc new-app --template docker-image-testing \
+<pre class="highlight"><code class="language-bash" data-lang="bash">oc new-app --template docker-image-testing \
   -p JENKINS_ORG_FOLDER_NAME=RHsyseng \
   -p JENKINS_GITHUB_OWNER=RHsyseng-user \
   -p JENKINS_GITHUB_REPO=openshift-client-library \
@@ -504,26 +504,26 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="title">Add Jenkins to the project</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc new-app --template jenkins-ephemeral -p NAMESPACE=$(oc project -q) -p MEMORY_LIMIT=2Gi</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">oc new-app --template jenkins-ephemeral -p NAMESPACE=$(oc project -q) -p MEMORY_LIMIT=2Gi</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Add the pipeline</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc create -f https://raw.githubusercontent.com/RHsyseng/openshift-pipeline-library/master/jenkins/openshift/pipeline.yaml</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">oc create -f https://raw.githubusercontent.com/RHsyseng/openshift-pipeline-library/master/jenkins/openshift/pipeline.yaml</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Start the build (pipeline)</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">oc start-build createcred-pipeline</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">oc start-build createcred-pipeline</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="truehow-does-this-work"><a class="anchor" href="#truehow-does-this-work"></a>How does this work?</h3>
+<h3 id="_how_does_this_work">How does this work?</h3>
 <div class="sect3">
-<h4 id="truesource-to-image-jenkins"><a class="anchor" href="#truesource-to-image-jenkins"></a>Source to Image Jenkins</h4>
+<h4 id="_source_to_image_jenkins">Source to Image Jenkins</h4>
 <div class="paragraph">
 <p>The Jenkins image is S2I enabled which is a huge benefit to this project because it requires additional items
 to be successful.  This includes:</p>
@@ -570,26 +570,26 @@ to be successful.  This includes:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueopenshift"><a class="anchor" href="#trueopenshift"></a>OpenShift</h4>
+<h4 id="_openshift">OpenShift</h4>
 <div class="sect4">
-<h5 id="trueconfigmap"><a class="anchor" href="#trueconfigmap"></a>ConfigMap</h5>
+<h5 id="_configmap">ConfigMap</h5>
 <div class="paragraph">
 <p>The <code>orgfolder</code> ConfigMap stores the configuration parameters for the seed job.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="truesecret"><a class="anchor" href="#truesecret"></a>Secret</h5>
+<h5 id="_secret">Secret</h5>
 <div class="paragraph">
 <p>The <code>github</code> secret stores the github username and the token.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="truejobs-pipeline"><a class="anchor" href="#truejobs-pipeline"></a>Jobs / Pipeline</h4>
+<h4 id="_jobs_pipeline">Jobs / Pipeline</h4>
 <div class="sect4">
-<h5 id="trueopenshift-pipeline"><a class="anchor" href="#trueopenshift-pipeline"></a>OpenShift Pipeline</h5>
+<h5 id="_openshift_pipeline">OpenShift Pipeline</h5>
 <div class="sect5">
-<h6 id="truefiles"><a class="anchor" href="#truefiles"></a>Files</h6>
+<h6 id="_files">Files</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -602,7 +602,7 @@ to be successful.  This includes:</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="truesteps"><a class="anchor" href="#truesteps"></a>Steps</h6>
+<h6 id="_steps">Steps</h6>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -625,9 +625,9 @@ to be successful.  This includes:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="trueseed-job"><a class="anchor" href="#trueseed-job"></a>Seed Job</h5>
+<h5 id="_seed_job">Seed Job</h5>
 <div class="sect5">
-<h6 id="truefiles-2"><a class="anchor" href="#truefiles-2"></a>Files</h6>
+<h6 id="_files_2">Files</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -637,16 +637,16 @@ to be successful.  This includes:</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="truedetails"><a class="anchor" href="#truedetails"></a>Details</h6>
+<h6 id="_details">Details</h6>
 <div class="paragraph">
 <p>This is the <a href="https://github.com/jenkinsci/job-dsl-plugin/wiki#getting-started">seed job</a> that will be executed to create the <code>orgFolderJob</code> using the Jenkins Job DSL.</p>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="trueorganizational-folder-job-dsl"><a class="anchor" href="#trueorganizational-folder-job-dsl"></a>Organizational Folder Job DSL</h5>
+<h5 id="_organizational_folder_job_dsl">Organizational Folder Job DSL</h5>
 <div class="sect5">
-<h6 id="truefiles-3"><a class="anchor" href="#truefiles-3"></a>Files</h6>
+<h6 id="_files_3">Files</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -656,7 +656,7 @@ to be successful.  This includes:</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="truedetails-2"><a class="anchor" href="#truedetails-2"></a>Details</h6>
+<h6 id="_details_2">Details</h6>
 <div class="paragraph">
 <p>This Job DSL will create a Organizational Folder job configured for:</p>
 </div>
@@ -679,9 +679,9 @@ to be successful.  This includes:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="truejenkinsfile"><a class="anchor" href="#truejenkinsfile"></a>Jenkinsfile</h5>
+<h5 id="_jenkinsfile">Jenkinsfile</h5>
 <div class="sect5">
-<h6 id="truefiles-4"><a class="anchor" href="#truefiles-4"></a>Files</h6>
+<h6 id="_files_4">Files</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -691,7 +691,7 @@ to be successful.  This includes:</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="truedetails-3"><a class="anchor" href="#truedetails-3"></a>Details</h6>
+<h6 id="_details_3">Details</h6>
 <div class="paragraph">
 <p>This is used for the openshift-pipeline-library project but it can also be used as an example for your own project.</p>
 </div>
@@ -702,12 +702,12 @@ to be successful.  This includes:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="truelibrary-methods"><a class="anchor" href="#truelibrary-methods"></a>Library Methods</h2>
+<h2 id="_library_methods">Library Methods</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="FunctionVariables"><a class="anchor" href="#FunctionVariables"></a>Function Variables</h3>
+<h3 id="FunctionVariables">Function Variables</h3>
 <div class="sect3">
-<h4 id="truenewbuildopenshift"><a class="anchor" href="#truenewbuildopenshift"></a>newBuildOpenShift</h4>
+<h4 id="_newbuildopenshift">newBuildOpenShift</h4>
 <div class="paragraph">
 <p>Starts a <code>oc new-build</code> process and monitors while the related objects
 are executing.</p>
@@ -715,60 +715,53 @@ are executing.</p>
 <div class="listingblock">
 <div class="title">Returned HashMap</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">[names: newBuild.names(), buildConfigName: buildConfigName]</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">[names: newBuild.names(), buildConfigName: buildConfigName]</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Example</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">def newBuild = newBuildOpenShift() {
-    url = scmUrl                                    <i class="conum" data-value="1"></i><b>(1)</b>
-    branch = scmRef                                 <i class="conum" data-value="2"></i><b>(2)</b>
-    contextDir = path                               <i class="conum" data-value="3"></i><b>(3)</b>
-    deleteBuild = false                             <i class="conum" data-value="4"></i><b>(4)</b>
-    randomName = true                               <i class="conum" data-value="5"></i><b>(5)</b>
-    image = "docker.io/aweiteka/playbook2image"     <i class="conum" data-value="6"></i><b>(6)</b>
-    imageStream = "project/isname"                  <i class="conum" data-value="7"></i><b>(7)</b>
+<pre class="highlight"><code class="language-java" data-lang="java">def newBuild = newBuildOpenShift() {
+    url = scmUrl                                    <b class="conum">(1)</b>
+    branch = scmRef                                 <b class="conum">(2)</b>
+    contextDir = path                               <b class="conum">(3)</b>
+    deleteBuild = false                             <b class="conum">(4)</b>
+    randomName = true                               <b class="conum">(5)</b>
+    image = "docker.io/aweiteka/playbook2image"     <b class="conum">(6)</b>
+    imageStream = "project/isname"                  <b class="conum">(7)</b>
 }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Create a build config from a remote repository.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Create a build config from a remote repository using a specific branch.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The directory in the repository to be used for the build</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Delete build config and related objects after complete.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Generate a random name (UUID) for the build config objects.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>External registry location for a container image.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>Name of an image stream to be used as a builder.</td>
-</tr>
-</table>
+<ol>
+<li>
+<p>Create a build config from a remote repository.</p>
+</li>
+<li>
+<p>Create a build config from a remote repository using a specific branch.</p>
+</li>
+<li>
+<p>The directory in the repository to be used for the build</p>
+</li>
+<li>
+<p>Delete build config and related objects after complete.</p>
+</li>
+<li>
+<p>Generate a random name (UUID) for the build config objects.</p>
+</li>
+<li>
+<p>External registry location for a container image.</p>
+</li>
+<li>
+<p>Name of an image stream to be used as a builder.</p>
+</li>
+</ol>
 </div>
 <div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<div class="title">Note</div>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -780,84 +773,80 @@ are executing.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="truerunopenshift"><a class="anchor" href="#truerunopenshift"></a>runOpenShift</h4>
+<h4 id="_runopenshift">runOpenShift</h4>
 <div class="paragraph">
 <p>Starts a <code>oc run</code> process and monitors the pod object while executing.  Current expectations for this function is that it will do some process and exit.  The exit code will determine success or failure.</p>
 </div>
 <div class="listingblock">
 <div class="title">Example</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">runOpenShift {
-    deletePod = true                <i class="conum" data-value="1"></i><b>(1)</b>
-    branch = scmRef                 <i class="conum" data-value="2"></i><b>(2)</b>
-    image = dockerImageRepository   <i class="conum" data-value="3"></i><b>(3)</b>
-    env = ["foo=goo"]               <i class="conum" data-value="4"></i><b>(4)</b>
+<pre class="highlight"><code class="language-java" data-lang="java">runOpenShift {
+    deletePod = true                <b class="conum">(1)</b>
+    branch = scmRef                 <b class="conum">(2)</b>
+    image = dockerImageRepository   <b class="conum">(3)</b>
+    env = ["foo=goo"]               <b class="conum">(4)</b>
 }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Delete pod after execution</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Name of the pod</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Docker image URL</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Environmental variables that the pod requires to run.</td>
-</tr>
-</table>
+<ol>
+<li>
+<p>Delete pod after execution</p>
+</li>
+<li>
+<p>Name of the pod</p>
+</li>
+<li>
+<p>Docker image URL</p>
+</li>
+<li>
+<p>Environmental variables that the pod requires to run.</p>
+</li>
+</ol>
 </div>
 </div>
 <div class="sect3">
-<h4 id="truegetimagestreamrepo"><a class="anchor" href="#truegetimagestreamrepo"></a>getImageStreamRepo</h4>
+<h4 id="_getimagestreamrepo">getImageStreamRepo</h4>
 <div class="paragraph">
 <p>Both the newBuildOpenShift and runOpenShift require either the ImageStream or Docker image repoistory url. This function returns both as a HashMap for a given ImageStream name.</p>
 </div>
 <div class="listingblock">
 <div class="title">Returned HashMap</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">[dockerImageRepository: is.status.dockerImageRepository,
+<pre class="highlight"><code class="language-java" data-lang="java">[dockerImageRepository: is.status.dockerImageRepository,
                  imageStream: imageStream]</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Example</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">isRepo = getImageStreamRepo(newBuild.buildConfigName)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">isRepo = getImageStreamRepo(newBuild.buildConfigName)</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="Utils"><a class="anchor" href="#Utils"></a>Utils</h3>
+<h3 id="Utils">Utils</h3>
 <div class="sect3">
-<h4 id="truecreatejobparameters-hashmap-configmap"><a class="anchor" href="#truecreatejobparameters-hashmap-configmap"></a>createJobParameters(HashMap configMap)</h4>
+<h4 id="_createjobparameters_hashmap_configmap">createJobParameters(HashMap configMap)</h4>
 <div class="paragraph">
 <p>Converts an OpenShift ConfigMap to a List of ParameterValues which can be used in a parameterized Jenkins Job.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="truegetgithubpr-string-login-string-oauthaccesstoken-string-changeurl"><a class="anchor" href="#truegetgithubpr-string-login-string-oauthaccesstoken-string-changeurl"></a>getGitHubPR(String login, String oauthAccessToken, String changeUrl)</h4>
+<h4 id="_getgithubpr_string_login_string_oauthaccesstoken_string_changeurl">getGitHubPR(String login, String oauthAccessToken, String changeUrl)</h4>
 <div class="paragraph">
 <p>Returns the originating repository and branch name of a pull request.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueconfigurerooturl-string-url"><a class="anchor" href="#trueconfigurerooturl-string-url"></a>configureRootUrl(String url)</h4>
+<h4 id="_configurerooturl_string_url">configureRootUrl(String url)</h4>
 <div class="paragraph">
 <p>Sets the Jenkins Location Configuration URL in an ephemeral Jenkins instance.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="truecreatecredentialsfromopenshift-hashmap-secret-string-id"><a class="anchor" href="#truecreatecredentialsfromopenshift-hashmap-secret-string-id"></a>createCredentialsFromOpenShift(HashMap secret, String id)</h4>
+<h4 id="_createcredentialsfromopenshift_hashmap_secret_string_id">createCredentialsFromOpenShift(HashMap secret, String id)</h4>
 <div class="paragraph">
 <p>From an OpenShift secret creates Jenkins credentials to be used in a Jenkins Job or plugin.</p>
 </div>
@@ -868,11 +857,8 @@ are executing.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-01 14:42:33 EDT
+Last updated 2017-05-01 14:47:28 EDT
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>
