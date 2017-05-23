@@ -15,6 +15,7 @@ import java.util.logging.Logger
 import jenkins.model.JenkinsLocationConfiguration
 import org.kohsuke.github.*
 import hudson.model.*
+import groovy.json.*
 
 
 /**
@@ -28,6 +29,25 @@ import hudson.model.*
 static void openShiftRun(def openshift, def args) {
     openshift.run(*args)
 }
+
+
+@NonCPS
+def getDockerCfgPassword(String dockerCfg) {
+
+    JsonSlurperClassic parser = new JsonSlurperClassic()
+    HashMap dockerCfgMap = (HashMap)parser.parseText(new String(dockerCfg.decodeBase64()))
+    parser = null
+
+    Set keys = dockerCfgMap.keySet()
+    Integer size = (Integer) keys.size()
+
+    if(size != 1) {
+        throw new Exception("dockerCfgMap keySet should only be a size of one (1) and is ${size}")
+    }
+
+    return dockerCfgMap[keys[0]].password
+}
+
 
 @NonCPS
 List<hudson.model.ParameterValue> createJobParameters(HashMap configMap) {
