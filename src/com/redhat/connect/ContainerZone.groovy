@@ -5,12 +5,10 @@ package com.redhat.connect
 @Grab(group='org.apache.httpcomponents', module='httpclient', version='4.5.2')
 
 import groovy.json.*
-import org.apache.http.NoHttpResponseException
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.*
 import org.apache.http.entity.*
 import org.apache.http.impl.client.*
-import org.junit.internal.Throwables
 
 import javax.naming.TimeLimitExceededException
 import java.util.logging.Level
