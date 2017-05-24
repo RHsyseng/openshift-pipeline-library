@@ -51,7 +51,7 @@ workflow-basic-steps
 workflow-cps-global-lib
 cloudbees-folder
 workflow-durable-task-step
-workflow-job
+workflow-job:2.11
 workflow-multibranch
 workflow-remote-loader
 workflow-scm-step
