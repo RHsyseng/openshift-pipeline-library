@@ -75,3 +75,4 @@ job-dsl:1.59
 pipeline-milestone-step
 lockable-resources
 embeddable-build-status
+openshift-client
