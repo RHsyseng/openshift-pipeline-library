@@ -130,8 +130,18 @@ public class ContainerZone implements Serializable {
     private static final HashMap getResponseMap(String uri, String jsonString) {
 
         CloseableHttpResponse response
-        CloseableHttpClient client = HttpClientBuilder.create().build()
+        int timeout = 3;
+        int socketTimeout = 30;
+        RequestConfig config = RequestConfig.custom().
+                setConnectTimeout(timeout * 1000).
+                setConnectionRequestTimeout(timeout * 1000).
+                setSocketTimeout(socketTimeout * 1000).build();
+
+        CloseableHttpClient client = HttpClientBuilder.create()
+                .setDefaultRequestConfig(config).build();
+
         HttpPost httpPost = new HttpPost(uri)
+
         httpPost.addHeader("content-type", "application/json")
         HashMap resultMap = new HashMap()
 
