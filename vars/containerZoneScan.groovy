@@ -7,7 +7,7 @@ def call(String dockerCfg, String dockerDigest) {
     containerZone.setDockerImageDigest(dockerDigest)
 
     stage('Scanning') {
-      containerZone.waitForScan(20, 30)
+      containerZone.waitForScan(30, 30)
     }
     stage('Scan Results') {
       def scanResults = containerZone.getScanResults()
@@ -42,7 +42,7 @@ def call(Map parameters = [:] ) {
     }
 
     stage('Scanning') {
-      containerZone.waitForScan(20, 30)
+      containerZone.waitForScan(30, 30)
     }
     stage('Scan Results') {
       def scanResults = containerZone.getScanResults()
