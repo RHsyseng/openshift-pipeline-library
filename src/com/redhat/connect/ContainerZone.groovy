@@ -260,7 +260,7 @@ public class ContainerZone implements Serializable {
         String jsonString = """
         {
             "secret": "${this.secret}",
-            "pid": "${this.projectId}",            
+            "pid": "${this.projectId}",
             "docker_image_digest": "${this.dockerImageDigest}"
         }
         """
@@ -282,13 +282,11 @@ public class ContainerZone implements Serializable {
                 /* Problem: The API returned a initial object that had a size of 1
                  * the further calls were 0.  Once the scan was available the size was 6.
                  */
+                Logger.getLogger("com.redhat.connect.ContainerZone")
+                        .info("scanResultsMap: ${scanResultsMap.toString()}")
 
                 if (size > 1) {
                     return true
-                }
-                else {
-                    Logger.getLogger("com.redhat.connect.ContainerZone")
-                            .info("scanResultsMap: ${scanResultsMap.toString()}")
                 }
             }
         }
