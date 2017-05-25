@@ -282,12 +282,16 @@ public class ContainerZone implements Serializable {
                 /* Problem: The API returned a initial object that had a size of 1
                  * the further calls were 0.  Once the scan was available the size was 6.
                  */
-                Logger.getLogger("com.redhat.connect.ContainerZone")
-                        .info("scanResultsMap: ${scanResultsMap.toString()}")
+//                Logger.getLogger("com.redhat.connect.ContainerZone")
+//                        .info("scanResultsMap: ${scanResultsMap.toString()}")
 
-                if (size > 1) {
+                if (scanResultsMap.containsKey("certifications")) {
                     return true
                 }
+
+//                if (size > 1) {
+//                    return true
+//                }
             }
         }
         catch (ContainerZoneException cze) {
