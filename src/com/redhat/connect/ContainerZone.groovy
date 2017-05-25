@@ -286,6 +286,10 @@ public class ContainerZone implements Serializable {
                 if (size > 1) {
                     return true
                 }
+                else {
+                    Logger.getLogger("com.redhat.connect.ContainerZone")
+                            .info("scanResultsMap: ${scanResultsMap.toString()}")
+                }
             }
         }
         catch (ContainerZoneException cze) {
