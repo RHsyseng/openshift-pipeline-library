@@ -13,7 +13,7 @@ node {
         String jsonString = """
         {
             "secret": "${secret}",
-            "pid": "p17633880910e488f5949aab3ad76cd4317542a7a06",
+            "pid": "p17633880910e488f5949aab3ad76cd4317542a7a06"
         }
         """
 
