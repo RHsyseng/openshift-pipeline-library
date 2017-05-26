@@ -58,7 +58,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <javaposse.jobdsl.plugin.ExecuteDslScripts plugin="job-dsl@1.59">
-      <targets>jenkins/jobs/orgFolderJob.groovy</targets>
+      <targets>jenkins/jobs/githubOrgJob.groovy</targets>
       <usingScriptText>false</usingScriptText>
       <ignoreExisting>false</ignoreExisting>
       <ignoreMissingFiles>false</ignoreMissingFiles>
