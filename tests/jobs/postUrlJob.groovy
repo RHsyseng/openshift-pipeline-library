@@ -17,6 +17,9 @@ node {
         }
         """
 
+
+        println(jsonString)
+
         def results = utils.postUrl("https://connect.redhat.com/api/container/status", jsonString, true)
         println(results)
 
