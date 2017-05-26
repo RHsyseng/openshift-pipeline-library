@@ -10,11 +10,12 @@ import com.cloudbees.plugins.credentials.impl.*
 import com.cloudbees.plugins.credentials.*
 import com.cloudbees.plugins.credentials.domains.*
 
+import org.apache.http.conn.*
+import org.apache.http.client.*
 import org.apache.http.client.methods.*
-import org.apache.http.client.HttpRequestRetryHandler
 import org.apache.http.entity.*
 import org.apache.http.impl.client.*
-import org.apache.http.client.config.RequestConfig
+import org.apache.http.client.config.*
 
 import jenkins.model.*
 import jenkins.model.Jenkins
