@@ -10,6 +10,8 @@ import com.cloudbees.plugins.credentials.impl.*
 import com.cloudbees.plugins.credentials.*
 import com.cloudbees.plugins.credentials.domains.*
 
+
+import org.apache.http.protocol.*
 import org.apache.http.conn.*
 import org.apache.http.client.*
 import org.apache.http.client.methods.*
@@ -25,9 +27,9 @@ import org.kohsuke.github.*
 import hudson.model.*
 import groovy.json.*
 
-import javax.xml.ws.spi.http.HttpContext
 import java.util.logging.Level
 import java.util.logging.Logger
+import javax.net.ssl.SSLException
 
 
 /**
