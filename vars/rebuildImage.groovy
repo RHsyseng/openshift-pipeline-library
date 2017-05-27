@@ -22,6 +22,8 @@ def call(Closure body) {
         }
         else {
             println("rebuild")
+            build job: config['rebuildJobName'],
+                    parameters: config['rebuildJobParameters']
         }
     }
 }
