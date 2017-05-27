@@ -44,6 +44,19 @@ static void openShiftRun(def openshift, def args) {
     openshift.run(*args)
 }
 
+/**
+ * This method POSTs to a HTTP uri with the requestJsonString as the payload.
+ * The retry boolean is available for HTTP-based APIs that incorrectly implement
+ * the POST method.  This will force a retry if a POST is used in place of the GET
+ * HTTP method.  ** Using retry should be avoided. **
+ *
+ * http://restcookbook.com/HTTP%20Methods/idempotency/
+ * https://hc.apache.org/httpcomponents-client-ga/tutorial/html/fundamentals.html
+ * @param uri
+ * @param requestJsonString
+ * @param retry
+ * @return
+ */
 static final HashMap postUrl(String uri, String requestJsonString, boolean retry = false) {
 
     CloseableHttpResponse response
@@ -56,12 +69,6 @@ static final HashMap postUrl(String uri, String requestJsonString, boolean retry
             setSocketTimeout(socketTimeout * 1000).build();
 
     if (retry) {
-        /* NOTE: This is to work around for an API that
-         * uses POST improperly.  POST is not idempotent
-         * so should _not_ be retried.  ** Avoid the use
-         * of this **
-         */
-
         HttpRequestRetryHandler postRequestHandler = new HttpRequestRetryHandler() {
 
             public boolean retryRequest(IOException exception,
@@ -76,15 +83,15 @@ static final HashMap postUrl(String uri, String requestJsonString, boolean retry
                 }
                 if (exception instanceof UnknownHostException) {
                     // Unknown host
-                    return false;
+                    return false
                 }
                 if (exception instanceof ConnectTimeoutException) {
                     // Connection refused
-                    return false;
+                    return false
                 }
                 if (exception instanceof SSLException) {
                     // SSL handshake exception
-                    return false;
+                    return false
                 }
                 return true
             }
@@ -93,12 +100,6 @@ static final HashMap postUrl(String uri, String requestJsonString, boolean retry
         client = HttpClientBuilder.create()
                 .setRetryHandler(postRequestHandler)
                 .setDefaultRequestConfig(config).build()
-//        client = HttpClients.custom()
-//        .setRetryHandler(postRequestHandler)
-//        .setDefaultRequestConfig(config)
-//        .build()
-
-
     }
     else {
         client = HttpClientBuilder.create()
