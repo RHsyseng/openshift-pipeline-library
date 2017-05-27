@@ -6,7 +6,7 @@ import com.redhat.*
 node {
     def id = null
     def seedJobParameters = null
-    def utils = new Utils()
+    def jenkinsUtils = new com.redhat.JenkinsUtils()
 
     /* The Jenkins root url is configured under
      * Manage Jenkins -> Configure System -> Jenkins Location
@@ -16,29 +16,28 @@ node {
     stage('Configure URL') {
         openshift.withCluster() {
             def route = openshift.selector('route', 'jenkins').object()
-            utils.configureRootUrl("https://${route.spec.host}")
+            jenkinsUtils.configureRootUrl("https://${route.spec.host}")
         }
     }
     stage('Extract ConfigMap') {
         openshift.withCluster() {
             def configMap = openshift.selector( "configmap/orgfolder" ).object().data
-            seedJobParameters = utils.createJobParameters(configMap)
+            seedJobParameters = jenkinsUtils.createJobParameters(configMap)
         }
     }
 
     stage('OpenShift -> Jenkins credentials') {
         openshift.withCluster() {
             def secret = openshift.selector( "secret/github" ).object()
-            id = utils.createCredentialsFromOpenShift(secret, "github") 
+            id = jenkinsUtils.createCredentialsFromOpenShift(secret, "github")
         }
     }
 
     stage('Configure Anonymous User') {
-        utils.setAnonPermBuildStatusIcon()
+        jenkinsUtils.setAnonPermBuildStatusIcon()
     }
 
     stage('Run Seed Job') {            
         build job: 'seed', parameters: seedJobParameters
     }
-
 }

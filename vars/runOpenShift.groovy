@@ -1,7 +1,5 @@
 #!groovy
 
-import com.redhat.Utils
-
 def call(Closure body) {
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST

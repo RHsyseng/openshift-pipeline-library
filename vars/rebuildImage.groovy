@@ -9,23 +9,19 @@ def call(Closure body) {
     body()
 
     String uri = "https://connect.redhat.com/api/container/status"
-    def utils = new Utils()
 
     stage('Check Container Status') {
         def json = new groovy.json.JsonBuilder()
         def root = json secret: config['secret'], pid: config['pid']
-        def results = utils.postUrl(uri, json.toString(), true)
+        def results = new Utils().postUrl(uri, json.toString(), true)
         json = null
         root = null
-        println(results)
 
         if(results['rebuild'] == "none") {
-            println("don't rebuild")
-            build job: config['rebuildJobName'],
-                    parameters: config['rebuildJobParameters']
+            println("Rebuild is not necessary at this time.")
         }
         else {
-            println("rebuild")
+            println("The container image needs to be rebuilt...")
             build job: config['rebuildJobName'],
                     parameters: config['rebuildJobParameters']
         }

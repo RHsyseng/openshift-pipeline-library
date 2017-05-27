@@ -8,7 +8,7 @@ node {
 
     def registrySecret = "${secret}"
 
-    def jobParameters = new Utils().createJobParameters([name: "foo"])
+    def jobParameters = new JenkinsUtils().createJobParameters([name: "foo"])
 
 
     rebuildImage {

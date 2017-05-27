@@ -20,10 +20,7 @@ import org.apache.http.impl.client.*
 import org.apache.http.client.config.*
 
 import jenkins.model.*
-import jenkins.model.Jenkins
 import hudson.security.*
-import jenkins.model.JenkinsLocationConfiguration
-import org.kohsuke.github.*
 import hudson.model.*
 import groovy.json.*
 
@@ -31,18 +28,6 @@ import java.util.logging.Level
 import java.util.logging.Logger
 import javax.net.ssl.SSLException
 
-
-/**
- * This function just removes the limitation of using the spread operator
- * under CPS.  Maybe the plugin could also resolve this?
- * @param openshift
- * @param args
- */
-
-@NonCPS
-static void openShiftRun(def openshift, def args) {
-    openshift.run(*args)
-}
 
 /**
  * This method POSTs to a HTTP uri with the requestJsonString as the payload.
@@ -161,125 +146,4 @@ def getDockerCfgPassword(String dockerCfg) {
     }
 
     return dockerCfgMap[keys[0]].password
-}
-
-
-@NonCPS
-List<hudson.model.ParameterValue> createJobParameters(HashMap configMap) {
-    try {
-        List<hudson.model.ParameterValue> parameters = new ArrayList<hudson.model.ParameterValue>()
-        configMap.each{ k, v -> 
-            parameters.add(new StringParameterValue("${k}", "${v}"))
-        }
-        return parameters
-    }
-    catch(all) {
-        Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
-        throw all
-    }
-}
-
-@NonCPS
-HashMap getGitHubPR(String login, String oauthAccessToken, String changeUrl) {
-    try {
-        String[] changeUrlArray = changeUrl.split('[/]')
-        String organization = changeUrlArray[3]
-        String repository = changeUrlArray[4]
-        int pullRequest = Integer.parseInt(changeUrlArray[6])
-
-        return getGitHubPR(login, oauthAccessToken, organization, repository, pullRequest)
-    }
-    catch(all){
-        Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
-        throw all
-    }
-}
-
-@NonCPS
-HashMap getGitHubPR(String login, String oauthAccessToken, String organization, String repository, int pullRequest) {
-    HashMap map = [:]
-    try {
-        GitHub github = GitHub.connect(login, oauthAccessToken)
-
-        GHCommitPointer pointer = github.getRepository("${organization}/${repository}")
-                .getPullRequest(pullRequest).getHead()
-
-        map['ref'] = pointer.ref
-        map['url'] = pointer.repository.gitHttpTransportUrl().toString()
-        return map
-    }
-    catch (all) {
-        Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
-        throw all
-    }
-}
-
-@NonCPS
-Boolean configureRootUrl(String url) {
-    try {
-        JenkinsLocationConfiguration jlc = JenkinsLocationConfiguration.get()
-        jlc.setUrl(url)
-        jlc.save()
-        return true
-    }
-    catch (all) {
-        Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
-        return false
-    }
-}
-
-@NonCPS 
-String createCredentialsFromOpenShift(HashMap secret, String id) {
-    try {
-        String username = new String(secret.data.username.decodeBase64())
-        String password = new String(secret.data.password.decodeBase64())
-        return createCredentials(id, username, password, "secret from openshift")
-    }
-    catch(all) {
-        Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
-        throw all
-    }
-}
-
-@NonCPS
-String createCredentials(String id = null, String username, String password, String description) {
-    try {
-        if (id == null) {
-            id = java.util.UUID.randomUUID().toString()
-        }
-        Credentials c = (Credentials) new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, id, description, username, password)
-        SystemCredentialsProvider.getInstance().getStore().addCredentials(Domain.global(), c)
-        return id
-    }
-    catch (all) {
-        Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
-        throw all
-    }
-}
-
-
-@NonCPS 
-Boolean setAnonPermBuildStatusIcon() {
-
-    def permissions = ["hudson.model.Item.ViewStatus", "hudson.model.View.Read"]
-    def sid = "anonymous"
-
-    return setJenkinsPermissions(permissions, sid)
-}
-
-//https://wiki.jenkins-ci.org/display/JENKINS/Grant+Cancel+Permission+for+user+and+group+that+have+Build+permission
-
-@NonCPS
-Boolean setJenkinsPermissions(def perms, def sid) {
-    try {
-        perms.each {
-            Jenkins.instance.authorizationStrategy.add(Permission.fromId(it), sid)
-       }
-       Jenkins.instance.save()
-       return true
-    }
-    catch (all) {
-        Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
-        return false
-    }
 }
