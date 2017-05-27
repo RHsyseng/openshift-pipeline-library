@@ -19,6 +19,8 @@ def call(Closure body) {
 
         if(results['rebuild'] == "none") {
             println("don't rebuild")
+            build job: config['rebuildJobName'],
+                    parameters: config['rebuildJobParameters']
         }
         else {
             println("rebuild")
