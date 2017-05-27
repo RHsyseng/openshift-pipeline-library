@@ -1,6 +1,5 @@
 #!groovy
 
-@Library('Utils')
 import com.redhat.*
 
 def call(Closure body) {
