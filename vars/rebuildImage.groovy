@@ -15,6 +15,8 @@ def call(Closure body) {
         def json = new groovy.json.JsonBuilder()
         def root = json secret: config['secret'], pid: config['pid']
         def results = utils.postUrl(uri, json.toString(), true)
+        json = null
+        root = null
         println(results)
 
         if(results['rebuild'] == "none") {
