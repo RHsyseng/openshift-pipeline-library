@@ -17,6 +17,9 @@ def call(Closure body) {
 
         def root = json secret: config['secret'], pid: config['pid']
 
+
+        println(root.toString())
+
         def results = utils.postUrl(uri, root.toString(), true)
         println(results)
     }
