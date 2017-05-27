@@ -12,15 +12,16 @@ def call(Closure body) {
     def utils = new Utils()
 
     stage('Check Container Status') {
-
         def json = new groovy.json.JsonBuilder()
-
         def root = json secret: config['secret'], pid: config['pid']
-
-
-        println(json.toString())
-
         def results = utils.postUrl(uri, json.toString(), true)
         println(results)
+
+        if(results['rebuild'] == "none") {
+            println("don't rebuild")
+        }
+        else {
+            println("rebuild")
+        }
     }
 }
