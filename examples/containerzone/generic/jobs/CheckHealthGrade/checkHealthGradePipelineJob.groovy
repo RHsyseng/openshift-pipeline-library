@@ -12,7 +12,7 @@ pipelineJob('CheckHealthGrade') {
                     branch('updates')
                 }
             }
-            scriptPath('examples/containerzone/docker/jobs/CheckHealthGrade/checkHealthGradePipeline.groovy')
+            scriptPath('examples/containerzone/generic/jobs/CheckHealthGrade/checkHealthGradePipeline.groovy')
         }
     }
     parameters {
