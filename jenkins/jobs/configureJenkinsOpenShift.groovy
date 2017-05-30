@@ -38,6 +38,6 @@ node {
     }
 
     stage('Run Seed Job') {            
-        build job: 'seed', parameters: seedJobParameters
+        build job: 'gitHubOrgSeed', parameters: seedJobParameters
     }
 }
