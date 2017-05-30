@@ -17,6 +17,9 @@ def call(Closure body) {
         json = null
         root = null
 
+        println("DEBUG: Project ID: ${config['pid']}")
+        println("DEBUG: Container Status Results: ${results}")
+
         if(results['rebuild'] == "none") {
             println("Rebuild is not necessary at this time.")
         }
