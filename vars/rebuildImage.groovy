@@ -23,7 +23,7 @@ def call(Closure body) {
         println("DEBUG: jsonString: ${jsonString}")
         println("DEBUG: Project ID: ${config['pid']}")
         println("DEBUG: Container Status Results: ${results}")
-        println("DEBUG: rebuildJobName: ${rebuildJobName}"
+        println("DEBUG: rebuildJobName: ${rebuildJobName}")
 
         if(results['rebuild'] == "none") {
             println("Rebuild is not necessary at this time.")
