@@ -1,6 +1,9 @@
 #!groovy
 
 pipelineJob('CheckHealthGrade') {
+    parameters {
+        stringParam('JOBNAME', 'foo', 'Name of rebuild job')
+    }
     defintion {
         cpsScm {
             scm {
