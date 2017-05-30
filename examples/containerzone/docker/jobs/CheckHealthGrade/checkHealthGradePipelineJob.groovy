@@ -1,9 +1,6 @@
 #!groovy
 
 pipelineJob('CheckHealthGrade') {
-    parameters {
-        stringParam('JOBNAME', 'foo', 'Name of rebuild job')
-    }
     defintion {
         cpsScm {
             scm {
@@ -18,7 +15,9 @@ pipelineJob('CheckHealthGrade') {
             scriptPath('examples/containerzone/docker/jobs/CheckHealthGrade/checkHealthGradePipeline.groovy')
         }
     }
-
+    parameters {
+        stringParam('JOBNAME', 'foo', 'Name of rebuild job')
+    }
     triggers {
         cron('@daily')
     }
