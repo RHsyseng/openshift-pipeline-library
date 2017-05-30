@@ -13,10 +13,14 @@ def call(Closure body) {
     stage('Check Container Status') {
         def json = new groovy.json.JsonBuilder()
         def root = json secret: config['secret'], pid: config['pid']
-        def results = new Utils().postUrl(uri, json.toString(), true)
-        json = null
+        def jsonString = json.toString()
+        // No longer needed remove since JsonBuilder is not serializable
         root = null
+        json = null
 
+        def results = new Utils().postUrl(uri, jsonString, true)
+
+        println("DEBUG: jsonString: ${jsonString}")
         println("DEBUG: Project ID: ${config['pid']}")
         println("DEBUG: Container Status Results: ${results}")
 
