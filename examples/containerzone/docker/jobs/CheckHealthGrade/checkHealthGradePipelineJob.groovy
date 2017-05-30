@@ -1,7 +1,7 @@
 #!groovy
 
 pipelineJob('CheckHealthGrade') {
-    defintion {
+    definition {
         cpsScm {
             scm {
                 git {
