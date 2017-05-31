@@ -12,6 +12,7 @@ def call(Closure body) {
     def dockerImageDigest = null
     def results = null
 
+    def uri = "https://connect.redhat.com/api/container/scanResults"
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${config.credentialsId}",
                       usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
         stage('Retrieve Docker Digest') {
