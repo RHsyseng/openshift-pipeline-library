@@ -48,11 +48,11 @@ def call(Closure body) {
 
 @NonCPS
 def printScanResults(def results) {
-    def requiredForCert = results.findAll{ it.value["required_for_certification"] }
-    def optional = results.findAll{ !it.value["required_for_certification"] }
+    def requiredForCert = results.findAll{ it["required_for_certification"] }
+    def optional = results.findAll{ !it["required_for_certification"] }
     requiredForCert.each {
         String name = it.name.replaceAll('_', ' ').minus(" exists").capitalize()
-        if(it.value["value"]) {
+        if(it["value"]) {
             println("${name}: PASSED")
         }
         else {
@@ -61,7 +61,7 @@ def printScanResults(def results) {
     }
     optional.each {
         String name = it.name.replaceAll('_', ' ').minus(" exists").capitalize()
-        if(it.value["value"]) {
+        if(it["value"]) {
             println("${name}: PASSED")
         }
         else {
