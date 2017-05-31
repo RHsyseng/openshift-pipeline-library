@@ -41,30 +41,30 @@ def call(Closure body) {
                 }
             }
 
-            sortPrintScanResults(results["certifications"][0]["assessment"])
+            currentBuild.result = 'SUCCESS'
+            if( sortPrintScanResults(results["certifications"][0]["assessment"]) ) {
+                currentBuild.result = 'FAILURE'
+            }
         }
     }
 }
 
 @NonCPS
 def sortPrintScanResults(def results) {
-
     def requiredForCert = results.findAll{ it["required_for_certification"] }
+    def failed = requiredForCert.findAll( { !it.value } ).size().asBoolean()
     def optional = results.findAll{ !it["required_for_certification"] }
 
     printScanResults(requiredForCert)
     printScanResults(optional)
+
+    return failed
 }
 
 @NonCPS
 def printScanResults(def results) {
     results.each {
         String name = it.name.replaceAll('_', ' ').minus(" exists").capitalize()
-        if(it["value"]) {
-            println("${name}: PASSED")
-        }
-        else {
-            println("${name}: FAILED")
-        }
+        println("${name}: ${it.value ? "PASSED" : "FAILED"}")
     }
 }
