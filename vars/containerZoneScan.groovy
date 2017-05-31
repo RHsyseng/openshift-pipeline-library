@@ -41,25 +41,24 @@ def call(Closure body) {
                 }
             }
 
-            printScanResults(results["certifications"][0]["assessment"])
+            sortPrintScanResults(results["certifications"][0]["assessment"])
         }
     }
 }
 
 @NonCPS
-def printScanResults(def results) {
+def sortPrintScanResults(def results) {
+
     def requiredForCert = results.findAll{ it["required_for_certification"] }
     def optional = results.findAll{ !it["required_for_certification"] }
-    requiredForCert.each {
-        String name = it.name.replaceAll('_', ' ').minus(" exists").capitalize()
-        if(it["value"]) {
-            println("${name}: PASSED")
-        }
-        else {
-            println("${name}: FAILED")
-        }
-    }
-    optional.each {
+
+    printScanResults(requiredForCert)
+    printScanResults(optional)
+}
+
+@NonCPS
+def printScanResults(def results) {
+    results.each {
         String name = it.name.replaceAll('_', ' ').minus(" exists").capitalize()
         if(it["value"]) {
             println("${name}: PASSED")
