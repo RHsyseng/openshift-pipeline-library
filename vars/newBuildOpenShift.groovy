@@ -1,8 +1,6 @@
 #!groovy
 import java.util.UUID
 
-
-
 def call(Closure body) {
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST

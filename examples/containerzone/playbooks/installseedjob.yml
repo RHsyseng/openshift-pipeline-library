@@ -1,0 +1,52 @@
+---
+- name: Install Container Zone Seed Jobs
+  hosts: localhost 
+  gather_facts: False
+  vars:
+    start_build: |
+      import jenkins.model.*
+      import hudson.model.*
+      Jenkins.instance.getAllItems(FreeStyleProject).each {it ->
+      def pattern = 'checkImageHealthSeed'
+      def m = it.getName() =~ pattern
+          if(m) {
+              it.scheduleBuild() 	 
+          }
+      }
+
+    approve_script: |
+      import org.jenkinsci.plugins.scriptsecurity.scripts.*
+      ScriptApproval sa = ScriptApproval.get();
+      for (ScriptApproval.PendingScript pending : sa.getPendingScripts()) {
+          sa.approveScript(pending.getHash());
+      }
+
+  tasks:
+    - name: Jenkins Job
+      jenkins_job:
+        config: "{{ lookup('file', 'templates/checkImageHealthSeed.xml') }}"
+        name: checkImageHealthSeed
+        url: http://10.53.252.84:8080
+        user: admin
+        token: 66d28ba4dbd8731e1148273158eb4add 
+
+    - name: Jenkins Start Job
+      jenkins_script:
+        script: "{{ start_build }}"
+        url: http://10.53.252.84:8080
+        user: admin
+        password: admin
+
+    - name: Jenkins Approve Script 
+      jenkins_script:
+        script: "{{ approve_script }}"
+        url: http://10.53.252.84:8080
+        user: admin
+        password: admin
+
+    - name: Jenkins Start Job
+      jenkins_script:
+        script: "{{ start_build }}"
+        url: http://10.53.252.84:8080
+        user: admin
+        password: admin
