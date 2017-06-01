@@ -7,9 +7,9 @@ pipelineJob('CheckHealthGrade') {
                 git {
                     remote {
                         name('openshift-pipeline-library')
-                        url('https://github.com/jcpowermac/openshift-pipeline-library')
+                        url('https://github.com/RHsyseng/openshift-pipeline-library')
                     }
-                    branch('updates')
+                    branch('master')
                 }
             }
             scriptPath('examples/containerzone/generic/jobs/CheckHealthGrade/checkHealthGradePipeline.groovy')

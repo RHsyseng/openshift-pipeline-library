@@ -15,6 +15,14 @@ def call(Closure body) {
                     image = docker.build("${env.USERNAME}/${config.imageName}:${config.imageTag}")
                 }
             }
+
+            if( config.get('testJobName') ) {
+                stage('Run ${config.testJobName}'){
+                    build job: config.testJobName,
+                            parameters: config.testJobParameters
+                }
+            }
+
             stage('Push Image') {
                 image.push()
             }
