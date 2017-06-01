@@ -19,6 +19,7 @@ node {
             jenkinsUtils.configureRootUrl("https://${route.spec.host}")
         }
     }
+    /* Create Jenkins build job parameters from a OpenShift ConfigMap */
     stage('Extract ConfigMap') {
         openshift.withCluster() {
             def configMap = openshift.selector( "configmap/orgfolder" ).object().data
@@ -26,17 +27,22 @@ node {
         }
     }
 
+    /* Create a Jenkins credential from a OpenShift secret for GitHub user and token */
     stage('OpenShift -> Jenkins credentials') {
         openshift.withCluster() {
             def secret = openshift.selector( "secret/github" ).object()
             id = jenkinsUtils.createCredentialsFromOpenShift(secret, "github")
         }
     }
-
+    /* To use the embeddable build status plugin the anonymous user must
+       have the ability to ViewStatus and Read.
+     */
     stage('Configure Anonymous User') {
         jenkinsUtils.setAnonPermBuildStatusIcon()
     }
-
+    /* This builds the Seed job for the GitHub Organizational folder Job DSL
+     * to create a job for the github org configured in seedJobParameters.
+     */
     stage('Run Seed Job') {            
         build job: 'gitHubOrgSeed', parameters: seedJobParameters
     }

@@ -8,6 +8,9 @@ node {
         checkout scm
     }
 
+    /* NOTE: think about ISV testing...
+     * How to inject a job to be built
+     */
     dockerBuildPush {
         credentialsId = "ContainerZone"
         contextDir = "examples/docker"
