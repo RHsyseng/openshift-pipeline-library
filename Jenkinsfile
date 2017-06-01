@@ -7,7 +7,7 @@ properties([disableConcurrentBuilds()])
 node {
     def source = ""
     def dockerfiles = null
-    def utils = new com.redhat.Utils()
+    def gitHubUtils = new com.redhat.GitHubUtils()
     String scmRef = scm.branches[0]
     String scmUrl = scm.browser.url
 
@@ -31,10 +31,9 @@ node {
     if (env.CHANGE_URL) {
         def pull = null
         stage('Github Url and Ref') {
-
             // Query the github repo api to return the clone_url and the ref (branch name)
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                pull = utils.getGitHubPR(env.USERNAME, env.PASSWORD, env.CHANGE_URL)
+                pull = gitHubUtils.getGitHubPR(env.USERNAME, env.PASSWORD, env.CHANGE_URL)
                 scmUrl = pull.url
                 scmRef = pull.ref
                 deleteBuild = true
@@ -61,7 +60,7 @@ node {
             }
             dockerImageRepository = getImageStreamRepo(newBuild.buildConfigName).dockerImageRepository
 
-	    runOpenShift {
+            runOpenShift {
                 deletePod = true
                 branch = scmRef
                 image = dockerImageRepository
