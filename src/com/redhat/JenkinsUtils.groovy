@@ -5,7 +5,7 @@ import com.cloudbees.groovy.cps.NonCPS
 import com.cloudbees.plugins.credentials.impl.*
 import com.cloudbees.plugins.credentials.*
 import com.cloudbees.plugins.credentials.domains.*
-
+import groovy.json.JsonSlurperClassic
 import jenkins.model.*
 import jenkins.model.Jenkins
 import hudson.security.*
@@ -53,6 +53,31 @@ String createCredentialsFromOpenShift(HashMap secret, String id) {
         return createCredentials(id, username, password, "secret from openshift")
     }
     catch(all) {
+        Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
+        throw all
+    }
+}
+
+@NonCPS
+String createCredentialsFromOpenShiftDockerCfg(HashMap secret, String id) {
+    try {
+        JsonSlurperClassic parser = new JsonSlurperClassic()
+        String decoded = new String(secret['data']['.dockercfg'].decodeBase64())
+        HashMap extractedMap = ((HashMap) parser
+                .parseText(decoded)
+                .entrySet()
+                .iterator()
+                .next()
+                .getValue())
+
+        parser = null
+        decoded = null
+
+        return createCredentials(id, (String) extractedMap.username, (String) extractedMap.password,
+                "DockerCfg from OpenShift")
+
+    }
+    catch (all) {
         Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, all.toString())
         throw all
     }

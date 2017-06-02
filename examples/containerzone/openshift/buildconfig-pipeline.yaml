@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: "ContainerZonePipeline"
+spec:
+  source:
+    type: "Git"
+    git:
+      uri: "https://github.com/RHsyseng/openshift-pipeline-library"
+      ref: "master"
+  strategy:
+    type: "JenkinsPipeline"
+    jenkinsPipelineStrategy:
+        jenkinsfilePath: examples/containerzone/openshift/jobs/buildPushScan.groovy
