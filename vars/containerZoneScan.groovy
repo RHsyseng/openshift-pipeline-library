@@ -15,6 +15,10 @@ def call(Closure body) {
     def uri = "https://connect.redhat.com/api/container/scanResults"
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${config.credentialsId}",
                       usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+
+        /** Retrieve the docker image digest from the Red Hat Connect
+         * OpenShift environment - which will be used with the scanning API.
+         */
         stage('Retrieve Docker Digest') {
             openshift.withCluster( config.openShiftUri, env.PASSWORD ) {
                 openshift.withProject( env.USERNAME ) {
@@ -23,6 +27,10 @@ def call(Closure body) {
                 }
             }
         }
+        /** Create the payload and wait for results to be returned from
+         * the API.  Once the certifications key is available break out of the loop
+         * and continue.
+         */
         stage('Wait for scan') {
             def json = new groovy.json.JsonBuilder()
             def root = json secret: env.PASSWORD, pid: env.USERNAME, docker_image_digest: dockerImageDigest
@@ -49,9 +57,19 @@ def call(Closure body) {
     }
 }
 
+/** sortPrintScanResults
+ * Extracts the required and optional items for certification.
+ * Determines if there are any items that failed in the required scanning
+ * @param results
+ * @return boolean
+ */
 @NonCPS
 def sortPrintScanResults(def results) {
     def requiredForCert = results.findAll{ it["required_for_certification"] }
+
+    /** In the requiredForCert list findall items in the dictionary with the
+     * key 'value' that is false.  Calculate the size as a boolean value.
+     */
     def failed = requiredForCert.findAll( { !it.value } ).size().asBoolean()
     def optional = results.findAll{ !it["required_for_certification"] }
 

@@ -2,6 +2,13 @@
 
 import com.redhat.*
 
+/** createDockerCfgJenkinsCredential
+ * Required:
+ * secretName
+ *
+ * @param body
+ * @return
+ */
 def call(Closure body) {
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST

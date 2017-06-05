@@ -62,6 +62,11 @@ String createCredentialsFromOpenShift(HashMap secret, String id) {
 String createCredentialsFromOpenShiftDockerCfg(HashMap secret, String id) {
     try {
         JsonSlurperClassic parser = new JsonSlurperClassic()
+        /** Base64 decode the dockercfg map.  There should only be one so
+         * parse the string, use an iterator to get the first entry value which is
+         * a map. Use the username and password from that map to create a Jenkins
+         * credential.
+         */
         String decoded = new String(secret['data']['.dockercfg'].decodeBase64())
         HashMap extractedMap = ((HashMap) parser
                 .parseText(decoded)
