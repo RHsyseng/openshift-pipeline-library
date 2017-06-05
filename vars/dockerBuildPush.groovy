@@ -1,5 +1,19 @@
 #!groovy
 
+/** dockerBuildPush
+ * Required:
+ * credentialsId
+ * contextDir
+ * imageName
+ * imagetag
+ *
+ * Optional:
+ * testJobName
+ * testJobParameters
+ *
+ * @param body
+ * @return
+ */
 def call(Closure body) {
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST
