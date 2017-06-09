@@ -20,7 +20,7 @@ def call(Closure body) {
                       usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
         stage('Check Container Status') {
             def json = new groovy.json.JsonBuilder()
-            def root = json secret: env.USERNAME, pid: env.PASSWORD
+            def root = json secret: env.PASSWORD, pid: env.USERNAME
             def jsonString = json.toString()
             // No longer needed remove since JsonBuilder is not serializable
             root = null
