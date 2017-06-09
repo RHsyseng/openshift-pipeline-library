@@ -1,3 +1,13 @@
+# required
+workflow-aggregator
+openshift-client:0.9.3 # if using OpenShift
+#docker-build-publish  # if using a VM-based docker build slave
+
+# recommended
+job-dsl:1.59
+git
+
+# optional
 ace-editor
 blueocean
 blueocean-autofavorite
@@ -45,7 +55,6 @@ script-security
 ssh-credentials
 structs
 subversion
-workflow-aggregator
 workflow-cps
 workflow-basic-steps
 workflow-cps-global-lib
@@ -66,14 +75,10 @@ scm-api
 github
 github-branch-source
 git-client
-git
 workflow-support
 workflow-api
 pipeline-github-lib
 github-organization-folder
-job-dsl:1.59
 pipeline-milestone-step
 lockable-resources
 embeddable-build-status
-openshift-client:0.9.3
-
