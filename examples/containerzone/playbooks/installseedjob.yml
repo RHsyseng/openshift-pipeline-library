@@ -55,28 +55,3 @@
         url: http://10.53.252.84:8080
         user: admin
         password: admin
-
-# ----------------------------
-# Jenkins Approve Script
-# ----------------------------
-# The Job DSL script must be approved to be run.  This task will
-# enable the use of the checkHealthGradePipeline.groovy script
-# ----------------------------
-    - name: Jenkins Approve Script
-      jenkins_script:
-        script: "{{ approve_script }}"
-        url: http://10.53.252.84:8080
-        user: admin
-        password: admin
-
-# ----------------------------
-# Jenkins Start Job
-# ----------------------------
-# Rerun the seed job which should now succeed.
-# ----------------------------
-    - name: Jenkins Start Job
-      jenkins_script:
-        script: "{{ start_build }}"
-        url: http://10.53.252.84:8080
-        user: admin
-        password: admin
