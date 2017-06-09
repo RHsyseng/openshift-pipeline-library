@@ -22,6 +22,7 @@ node {
     }
 
     containerZoneHealthCheck {
+        uri = "http://wiremock.router.default.svc.cluster.local"
         credentialsId = "ContainerZone"
         rebuildJobName = jobName
         rebuildJobParameters = jobParameters
