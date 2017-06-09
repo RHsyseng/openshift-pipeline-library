@@ -8,7 +8,14 @@ def call(Closure body) {
     body.delegate = config
     body()
 
-    String uri = "https://connect.redhat.com/api/container/status"
+
+    String uri = "https://connect.redhat.com"
+    String path = "/api/container/status"
+    String url = uri + path
+
+    if( config.get('uri') ) {
+        url = config.uri + path
+    }
 
     stage('Check Container Status') {
         def json = new groovy.json.JsonBuilder()
@@ -18,7 +25,7 @@ def call(Closure body) {
         root = null
         json = null
 
-        def results = new Utils().postUrl(uri, jsonString, true)
+        def results = new Utils().postUrl(url, jsonString, true)
 
         println("DEBUG: jsonString: ${jsonString}")
         println("DEBUG: Project ID: ${config['pid']}")
