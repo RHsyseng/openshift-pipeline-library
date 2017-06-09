@@ -97,7 +97,7 @@ static final HashMap postUrl(String uri, String requestJsonString, boolean retry
     HashMap resultMap = new HashMap()
 
     try {
-        // Logger.getLogger("com.redhat.Utils").log(Level.INFO, "requestJsonString: ${requestJsonString}")
+        //Logger.getLogger("com.redhat.Utils").log(Level.INFO, "requestJsonString: ${requestJsonString}")
         httpPost.setEntity(new StringEntity(requestJsonString))
         response = client.execute(httpPost)
 
@@ -109,7 +109,8 @@ static final HashMap postUrl(String uri, String requestJsonString, boolean retry
         /* The JsonSluperClassic must be used vs JsonSlurper
          * since it returns a LazyMap which is not serializable.
          */
-        // Logger.getLogger("com.redhat.Utils").log(Level.INFO, "jsonResponse: ${jsonResponse}")
+        //Logger.getLogger("com.redhat.Utils").log(Level.INFO, "jsonResponse: ${jsonResponse}")
+        Logger.getLogger("com.redhat.Utils").log(Level.INFO, ">>>>>>>> BEFORE PARSER <<<<<<<<<")
         JsonSlurperClassic parser = new JsonSlurperClassic()
         resultMap = (HashMap) parser.parseText(jsonResponse)
         parser = null

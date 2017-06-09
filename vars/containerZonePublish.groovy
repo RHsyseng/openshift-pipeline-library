@@ -12,16 +12,14 @@ def call(Closure body) {
     def dockerImageDigest = null
     def results = null
 
-    def uri = "https://connect.redhat.com"
-    def path = "/api/container/scanResults"
-    def url = uri + path
+    String uri = "https://connect.redhat.com"
+    String path = "/api/container/publish"
+    String url = uri + path
 
     if( config.get('uri') ) {
         url = config.uri + path
     }
 
-
-    println(url)
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${config.credentialsId}",
                       usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 
@@ -46,21 +44,21 @@ def call(Closure body) {
             def jsonString = json.toString()
             json = null
             root = null
+            results = new Utils().postUrl(url, jsonString, true)
 
-            timeout(30) {
-                waitUntil {
-                    results = new Utils().postUrl(url, jsonString, true)
-
-                    if (results.containsKey("certifications")) {
-                        return true
+            if (results.containsKey("publish")) {
+                if (results.publish.containsKey("success")){
+                    if (results.publish.success) {
+                        currentBuild.result = 'SUCCESS'
                     }
-                    else return false
                 }
             }
-
-            currentBuild.result = 'SUCCESS'
-            if( sortPrintScanResults(results["certifications"][0]["assessment"]) ) {
+            else if (results.containsKey("errors")) {
+                printErrorCriteria(results.errors.criteria)
                 currentBuild.result = 'FAILURE'
+            }
+            else {
+                println("Unknown response")
             }
         }
     }
@@ -73,25 +71,9 @@ def call(Closure body) {
  * @return boolean
  */
 @NonCPS
-def sortPrintScanResults(def results) {
-    def requiredForCert = results.findAll{ it["required_for_certification"] }
-
-    /** In the requiredForCert list findall items in the dictionary with the
-     * key 'value' that is false.  Calculate the size as a boolean value.
-     */
-    def failed = requiredForCert.findAll( { !it.value } ).size().asBoolean()
-    def optional = results.findAll{ !it["required_for_certification"] }
-
-    printScanResults(requiredForCert)
-    printScanResults(optional)
-
-    return failed
-}
-
-@NonCPS
-def printScanResults(def results) {
-    results.each {
-        String name = it.name.replaceAll('_', ' ').minus(" exists").capitalize()
-        println("${name}: ${it.value ? "PASSED" : "FAILED"}")
+def printErrorCriteria(def results) {
+    results.fail.each {
+        println("FAILED - Please Review: ${it.label}\n${it.url}")
     }
 }
+
