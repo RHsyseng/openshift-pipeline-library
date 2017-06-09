@@ -28,7 +28,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <javaposse.jobdsl.plugin.ExecuteDslScripts plugin="job-dsl@1.59">
-      <targets>examples/containerzone/generic/jobs/CheckHealthGrade/checkHealthGradePipelineJob.groovy</targets>
+      <targets>examples/containerzone/generic/jobs/CheckHealthGrade/checkHealthGradePipeline.groovy</targets>
       <usingScriptText>false</usingScriptText>
       <ignoreExisting>false</ignoreExisting>
       <ignoreMissingFiles>false</ignoreMissingFiles>

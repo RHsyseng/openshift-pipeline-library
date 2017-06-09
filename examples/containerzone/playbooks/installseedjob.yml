@@ -7,7 +7,7 @@
 # ansible-playbook -i localhost, -c local installseedjob.yml
 # ----------------------------
 - name: Install Container Zone Seed Jobs
-  hosts: localhost 
+  hosts: localhost
   gather_facts: False
   vars:
     start_build: |
@@ -17,7 +17,7 @@
       def pattern = 'checkImageHealthSeed'
       def m = it.getName() =~ pattern
           if(m) {
-              it.scheduleBuild() 	 
+              it.scheduleBuild()
           }
       }
 
@@ -35,13 +35,13 @@
 # This is an example of creating a seed job to build a pipeline job
 # that uses the Job DSL plugin.
 # ----------------------------
-    - name: Create Seed Job for checkHealthGradePipelineJob (Job DSL)
+    - name: Create Seed Job for checkHealthGradePipeline (Job DSL)
       jenkins_job:
         config: "{{ lookup('file', 'templates/checkImageHealthSeed.xml') }}"
         name: checkImageHealthSeed
         url: http://10.53.252.84:8080
         user: admin
-        token: 66d28ba4dbd8731e1148273158eb4add 
+        token: 66d28ba4dbd8731e1148273158eb4add
 
 # ----------------------------
 # Jenkins Start Job
@@ -60,7 +60,7 @@
 # Jenkins Approve Script
 # ----------------------------
 # The Job DSL script must be approved to be run.  This task will
-# enable the use of the checkHealthGradePipelineJob.groovy script
+# enable the use of the checkHealthGradePipeline.groovy script
 # ----------------------------
     - name: Jenkins Approve Script
       jenkins_script:
