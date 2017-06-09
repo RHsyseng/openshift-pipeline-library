@@ -11,6 +11,7 @@ import com.redhat.*
 node {
 
     def jobParameters = new JenkinsUtils().createJobParameters([name: "foo"])
+    def jobName = "mockRebuild"
 
     containerZoneScan {
         uri = "http://wiremock.router.default.svc.cluster.local"
@@ -20,19 +21,10 @@ node {
         imageTag = "1.0"
     }
 
-    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "ContainerZone" , usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-
-        def password = env.PASSWORD
-        def username = env.USERNAME
-        def jobName = "mockRebuild"
-
-        rebuildImage {
-            uri = "http://wiremock.router.default.svc.cluster.local"
-            pid = username
-            secret = password
-            rebuildJobName = jobName
-            rebuildJobParameters = jobParameters
-        }
+    containerZoneHealthCheck {
+        credentialsId = "ContainerZone"
+        rebuildJobName = jobName
+        rebuildJobParameters = jobParameters
     }
 
     containerZonePublish {
