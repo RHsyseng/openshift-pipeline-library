@@ -1,13 +1,35 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project>
-  <actions/>
-  <description></description>
-  <keepDependencies>true</keepDependencies>
-  <properties/>
+<flow-definition plugin="workflow-job@2.11">
+<actions/>
+<description></description>
+<keepDependencies>false</keepDependencies>
+<properties>
+  <hudson.model.ParametersDefinitionProperty>
+    <parameterDefinitions>
+      <hudson.model.StringParameterDefinition>
+        <name>JOBNAME</name>
+        <description>Name of rebuild job</description>
+        <defaultValue>foo</defaultValue>
+      </hudson.model.StringParameterDefinition>
+    </parameterDefinitions>
+  </hudson.model.ParametersDefinitionProperty>
+  <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    <triggers class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+      <c class="list">
+        <hudson.triggers.TimerTrigger>
+          <spec>@daily</spec>
+        </hudson.triggers.TimerTrigger>
+      </c>
+      <list reference="../c"/>
+    </triggers>
+  </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+</properties>
+<definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.33">
   <scm class="hudson.plugins.git.GitSCM" plugin="git@3.3.0">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
+        <name>openshift-pipeline-library</name>
         <url>https://github.com/RHsyseng/openshift-pipeline-library</url>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -17,28 +39,10 @@
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <submoduleCfg class="list"/>
+    <gitTool>Default</gitTool>
     <extensions/>
   </scm>
-  <canRoam>true</canRoam>
-  <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <triggers/>
-  <concurrentBuild>false</concurrentBuild>
-  <builders>
-    <javaposse.jobdsl.plugin.ExecuteDslScripts plugin="job-dsl@1.59">
-      <targets>examples/containerzone/generic/jobs/CheckHealthGrade/checkHealthGradePipelineJob.groovy</targets>
-      <usingScriptText>false</usingScriptText>
-      <ignoreExisting>false</ignoreExisting>
-      <ignoreMissingFiles>false</ignoreMissingFiles>
-      <failOnMissingPlugin>false</failOnMissingPlugin>
-      <unstableOnDeprecation>false</unstableOnDeprecation>
-      <removedJobAction>IGNORE</removedJobAction>
-      <removedViewAction>IGNORE</removedViewAction>
-      <lookupStrategy>JENKINS_ROOT</lookupStrategy>
-    </javaposse.jobdsl.plugin.ExecuteDslScripts>
-  </builders>
-  <publishers/>
-  <buildWrappers/>
-</project>
+  <scriptPath>examples/containerzone/generic/jobs/CheckHealthGrade/checkHealthGradePipeline.groovy</scriptPath>
+  <lightweight>false</lightweight>
+</definition>
+<disabled>false</disabled>

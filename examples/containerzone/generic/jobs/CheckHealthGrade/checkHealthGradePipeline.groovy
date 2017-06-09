@@ -6,6 +6,10 @@ import com.redhat.*
 
 node {
 
+    /**
+     * This DSL (groovy closure) checks the container status
+     * rebuilding the image if required
+     */
     def jobParameters = new JenkinsUtils().createJobParameters([name: "foo"])
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "ContainerZone" , usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
