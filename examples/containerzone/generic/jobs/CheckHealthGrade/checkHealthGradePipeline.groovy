@@ -12,17 +12,11 @@ node {
      */
     def jobParameters = new JenkinsUtils().createJobParameters([name: "foo"])
 
-    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "ContainerZone" , usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+    def jobName = JOBNAME
 
-        def password = env.PASSWORD
-        def username = env.USERNAME
-        def jobName = JOBNAME
-
-        rebuildImage {
-            pid = username
-            secret = password
-            rebuildJobName = jobName
-            rebuildJobParameters = jobParameters
-        }
+    containerZoneHealthCheck {
+        credentialsId = "ContainerZone"
+        rebuildJobName = jobName
+        rebuildJobParameters = jobParameters
     }
 }
