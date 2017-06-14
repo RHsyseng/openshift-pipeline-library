@@ -30,14 +30,24 @@ def call(Closure body) {
 
             println("DEBUG: Container Status Results: ${results}")
 
-            if (results['rebuild'] == "none") {
-                println("Rebuild is not necessary at this time.")
-            } else {
-                println("The container image needs to be rebuilt...")
+            if (results.containsKey("errors")) {
+                println(results.errors)
+                currentBuild.result = 'FAILURE'
+            } else if (results.containsKey("rebuild")) {
+                if (results.rebuild == "none") {
+                    println("Rebuild is not necessary at this time.")
+                } else if (results.rebuild == "recommended") {
+                    println("The rebuild status is ${results.rebuild} and freshness grade: ${results.grade}")
 
-                if (config.get('rebuildJobName')) {
-                    build job: config['rebuildJobName'],
-                            parameters: config['rebuildJobParameters']
+                } else if (results.rebuild == "mandatory") {
+                    println("The rebuild status is ${results.rebuild} and freshness grade: ${results.grade}")
+                    if (config.get('rebuildJobName')) {
+                        build job: config['rebuildJobName'],
+                                parameters: config['rebuildJobParameters']
+                    }
+                } else {
+                    error "ERROR Unknown response from container status: ${results}"
+                    currentBuild.result = 'FAILURE'
                 }
             }
         }

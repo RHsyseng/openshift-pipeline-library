@@ -1,0 +1,57 @@
+---
+tests:
+- name: publish with 200 error
+  filename: publish-200-error.json
+  endpoint: publish
+  status: 200
+  jobname: mockPublish
+- name: publish with 200 publish
+  filename: publish-200-publish.json
+  endpoint: publish
+  status: 200
+  jobname: mockPublish
+- name: publish with 200 error unable to publish
+  filename: publish-200-unable.json
+  endpoint: publish
+  status: 200
+  jobname: mockPublish
+- name: publish 401 error
+  filename: publish-401-error.json
+  endpoint: publish
+  status: 401
+  jobname: mockPublish
+- name: scanResults with 200 error
+  filename: scanResults-200-error.json
+  endpoint: scanResults
+  status: 200
+  jobname: mockScan
+- name: scanResults with 401 error
+  filename: scanResults-401-error.json
+  endpoint: scanResults
+  status: 401
+  jobname: mockScan
+- name: status with 200 error
+  filename: status-200-error.json
+  endpoint: status
+  status: 200
+  jobname: mockHealthCheck
+- name: status with rebuild mandatory
+  filename: status-200-mand.json
+  endpoint: status
+  status: 200
+  jobname: mockHealthCheck
+- name: status with rebuild none
+  filename: status-200-none.json
+  endpoint: status
+  status: 200
+  jobname: mockHealthCheck
+- name: status with rebuild recommended
+  filename: status-200-recommend.json
+  endpoint: status
+  status: 200
+  jobname: mockHealthCheck
+- name: status with 401 error
+  filename: status-401-error.json
+  endpoint: status
+  status: 401
+  jobname: mockHealthCheck

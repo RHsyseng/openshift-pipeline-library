@@ -42,9 +42,9 @@ import javax.net.ssl.SSLException
  * @param retry
  * @return
  */
+//static final HashMap postUrl(String uri, String requestJsonString, boolean retry = false) {
 static final HashMap postUrl(String uri, String requestJsonString, boolean retry = false) {
 
-    CloseableHttpResponse response
     CloseableHttpClient client
     int timeout = 3;
     int socketTimeout = 30;
@@ -99,7 +99,8 @@ static final HashMap postUrl(String uri, String requestJsonString, boolean retry
     try {
         //Logger.getLogger("com.redhat.Utils").log(Level.INFO, "requestJsonString: ${requestJsonString}")
         httpPost.setEntity(new StringEntity(requestJsonString))
-        response = client.execute(httpPost)
+        CloseableHttpResponse response = client.execute(httpPost)
+
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))
         String jsonResponse = bufferedReader.getText()
@@ -112,9 +113,19 @@ static final HashMap postUrl(String uri, String requestJsonString, boolean retry
         //Logger.getLogger("com.redhat.Utils").log(Level.INFO, "jsonResponse: ${jsonResponse}")
         Logger.getLogger("com.redhat.Utils").log(Level.INFO, ">>>>>>>> BEFORE PARSER <<<<<<<<<")
         JsonSlurperClassic parser = new JsonSlurperClassic()
-        resultMap = (HashMap) parser.parseText(jsonResponse)
+
+        Object result = parser.parseText(jsonResponse)
         parser = null
-        return resultMap
+        jsonResponse = null
+
+        /** TODO: Maybe add an argument to specify the key
+         * TODO: that will represent the ArrayList value
+         */
+        if( result instanceof ArrayList) {
+            return (HashMap) [errors: result]
+        }
+
+        return (HashMap) result
     }
     catch (IOException ioe) {
         Logger.getLogger("com.redhat.Utils").log(Level.SEVERE, ioe.toString())

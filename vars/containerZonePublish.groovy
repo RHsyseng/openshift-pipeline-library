@@ -10,7 +10,7 @@ def call(Closure body) {
     body()
 
     def dockerImageDigest = null
-    def results = null
+    //def results = null
 
     String uri = "https://connect.redhat.com"
     String path = "/api/container/publish"
@@ -44,7 +44,7 @@ def call(Closure body) {
             def jsonString = json.toString()
             json = null
             root = null
-            results = new Utils().postUrl(url, jsonString, true)
+            HashMap results = new Utils().postUrl(url, jsonString, true)
 
             if (results.containsKey("publish")) {
                 if (results.publish.containsKey("success")){
@@ -54,7 +54,12 @@ def call(Closure body) {
                 }
             }
             else if (results.containsKey("errors")) {
-                printErrorCriteria(results.errors.criteria)
+                if (results.errors instanceof ArrayList) {
+                    error "${results.errors}"
+                }
+                else {
+                    printErrorCriteria(results.errors.criteria)
+                }
                 currentBuild.result = 'FAILURE'
             }
             else {
@@ -71,7 +76,7 @@ def call(Closure body) {
  * @return boolean
  */
 @NonCPS
-def printErrorCriteria(def results) {
+void printErrorCriteria(def results) {
     results.fail.each {
         println("FAILED - Please Review: ${it.label}\n${it.url}")
     }
