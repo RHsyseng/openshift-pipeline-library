@@ -17,7 +17,9 @@
 
 - Jenkins
     - pipeline job named `mock` to copy and replace the `scriptPath`
-    - Username/password credential with username as the pid and password as the secret
+    - Username/password credential with the id of `ContainerZone`
+        - The `username` will be the Container Zone project id (pid)
+        - The `password` will be the Container Zone project `secret`
     - Required plugins see [plugins.txt](../jenkins/plugins.txt)
     - This global pipeline library configured with the name `Utils`
 - OpenShift Project
