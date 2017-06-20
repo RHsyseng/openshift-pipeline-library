@@ -1,13 +1,9 @@
-# required
 workflow-aggregator
-openshift-client:0.9.3 # if using OpenShift
-#docker-build-publish  # if using a VM-based docker build slave
+openshift-client:0.9.3
 
-# recommended
 job-dsl:1.59
 git
 
-# optional
 ace-editor
 blueocean
 blueocean-autofavorite
