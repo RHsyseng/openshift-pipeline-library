@@ -53,6 +53,9 @@ def call(Closure body) {
 
                     if (results.containsKey("certifications")) {
                         return true
+                    } else if( results.containsKey("errors")) {
+                        currentBuild.result = 'FAILURE'
+                        error "${results.errors}"
                     }
                     else return false
                 }
