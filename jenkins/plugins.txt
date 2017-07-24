@@ -1,80 +1,55 @@
-workflow-aggregator
-openshift-client:0.9.3
+# OpenShift Jenkins plugins
+openshift-pipeline:1.0.47
+openshift-login:0.12
+openshift-client:0.9.6
 
-job-dsl:1.59
-git
+# lockable resource - Used with openshift-client.  Make sure a buildconfig is not running
+# concurrently - https://wiki.jenkins-ci.org/display/JENKINS/Lockable+Resources+Plugin
+lockable-resources:1.11.2
 
-ace-editor
-blueocean
-blueocean-autofavorite
-blueocean-commons
-blueocean-config
-blueocean-dashboard
-blueocean-display-url
-blueocean-github-pipeline
-blueocean-git-pipeline
-blueocean-i18n
-blueocean-events
-blueocean-jwt
-blueocean-personalization
-blueocean-pipeline-api-impl
-blueocean-rest
-blueocean-rest-impl
-blueocean-web
-display-url-api
-durable-task
-git-server
-handlebars
-icon-shim
-jquery-detached
-junit
+# kubernetes plugin - https://wiki.jenkins-ci.org/display/JENKINS/Kubernetes+Plugin
 kubernetes:0.10
-mailer
-mapdb-api
-matrix-auth
-matrix-project
-mercurial
-momentjs
-multiple-scms
-openshift-login
-openshift-pipeline
-openshift-sync
-pipeline-build-step
-pipeline-graph-analysis
-pipeline-input-step
-pipeline-rest-api
-pipeline-stage-step
-pipeline-stage-view
-pipeline-utility-steps
-plain-credentials
-script-security
-ssh-credentials
-structs
-subversion
-workflow-cps
-workflow-basic-steps
-workflow-cps-global-lib
-cloudbees-folder
-workflow-durable-task-step
-workflow-job:2.11
-workflow-multibranch
-workflow-remote-loader
-workflow-scm-step
-workflow-step-api
-bouncycastle-api
-credentials
-ansicolor
-github-api
-branch-api
-token-macro
-scm-api
-github
-github-branch-source
-git-client
-workflow-support
-workflow-api
-pipeline-github-lib
-github-organization-folder
-pipeline-milestone-step
-lockable-resources
-embeddable-build-status
+
+# fabric8 openshift sync
+openshift-sync:0.1.20
+
+workflow-scm-step:2.4
+
+# https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Job+Plugin
+workflow-job:2.11.1
+# Pipeline plugin - https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin
+# 2.5 now includes pipeline-model-definition (declaritive pipeline)
+# 2.4 brought in pipeline-milestone-step
+workflow-aggregator:2.5
+
+# remote loader https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Remote+Loader+Plugin
+workflow-remote-loader:1.2
+
+matrix-project:1.7.1
+multiple-scms:0.6
+ssh-credentials:1.13
+
+git:3.4.0
+github:1.27.0
+git-client:2.4.6
+github-api:1.86
+
+# Pipeline Utility Steps Plugin - https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Utility+Steps+Plugin
+pipeline-utility-steps:1.1.5
+
+# Jenkins v2 specific
+matrix-auth:1.5
+blueocean:1.1.4
+
+# Legacy stuff
+mapdb-api:1.0.1.0
+subversion:2.5.7
+
+
+job-dsl:1.63
+
+embeddable-build-status:1.9
+slack:2.2
+generic-webhook-trigger:1.10
+
+monitoring:1.67.0
