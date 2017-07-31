@@ -8,10 +8,15 @@ def call(Closure body) {
     body()
 
     def newBuild = null
+    def buildConfig = null
+    def builds = null
+    def newBuildObjectNames = null
     String contextDir = config['contextDir'] ?: ""
     String image = ""
-    String name = config['branch'] ?: ""
+    String name = config['name'] ?: ""
     String imageStream = ""
+    String baseImageStreamName = ""
+    String strategy = ""
 
     if(config['image']) {
         image = "${config.image}~"
@@ -30,12 +35,24 @@ def call(Closure body) {
 
     def deleteBuild = config['deleteBuild'] ?: false
 
-    stage('OpenShift Build') {
+    stage("${name} - OpenShift Build") {
         openshift.withCluster() {
             openshift.withProject() {
+                Boolean buildConfigExists = false
+
                 try {
-                    def builds = null
+                    buildConfig = openshift.selector('buildconfig', name)
+                    buildConfigExists = buildConfig.exists()
+                }
+                catch (err) {
+                    // This resolves an error that will occur if using 3.4.x oc binary
+                    buildConfigExists = false
+                }
+
+
+                try {
                     def buildConfigName = null
+
 
                     /* If the OpenShift oc new-build command is ran in succession it can cause a
                      * race if the base imagestream does not already exist.  In normal situations
@@ -50,13 +67,47 @@ def call(Closure body) {
                          * TODO: different filename e.g. Dockerfile.rhel7.
                          */
 
-                        newBuild = openshift.newBuild("${image}${config.url}#${config.branch}",
-                                "--name=${name}",
-                                "--context-dir=${contextDir}",
-                                "${imageStream}")
-                        echo "newBuild created: ${newBuild.count()} objects : ${newBuild.names()}"
+                        if(buildConfigExists) {
+                            /* With the 3.4 oc binary this will not function */
+                            buildConfig.startBuild()
+                        }
+                        else {
 
-                        def buildConfig = newBuild.narrow("bc")
+                            newBuildRaw = openshift.raw("-o json",
+                                    "new-build", "${image}${config.url}#${config.branch}",
+                                    "--name=${name}",
+                                    "--context-dir=${contextDir}",
+                                    "${imageStream}", "--dry-run")
+
+                            newBuildMap = readJSON text: newBuildRaw.out
+
+                            /* TODO: add check if the image stream exists */
+                            for (item in newBuildMap.items) {
+                                if( item.kind == 'ImageStream') {
+                                    if (item.metadata.name != name) {
+                                        baseImageStreamName = item.metadata.name
+
+                                        /* This is only needed when
+                                         * there is already an imagestream configured
+                                         * for the project.
+                                         */
+                                        if (openshift.selector('is', baseImageStreamName).exists()) {
+                                            image = "${openshift.project()}/${baseImageStreamName}~"
+                                            strategy = "--strategy=docker"
+                                        }
+                                    }
+                                }
+                            }
+
+                            newBuild = openshift.newBuild("${image}${config.url}#${config.branch}",
+                                    "--name=${name}",
+                                    "--context-dir=${contextDir}",
+                                    "${imageStream}",
+                                    "${strategy}")
+                            echo "newBuild created: ${newBuild.count()} objects : ${newBuild.names()}"
+
+                            buildConfig = newBuild.narrow("bc")
+                        }
                         buildConfigName = buildConfig.object().metadata.name
 
                         builds = buildConfig.related("builds")
@@ -73,25 +124,44 @@ def call(Closure body) {
 
                     timeout(10) {
                         builds.untilEach(1) {
-                            return it.object().status.phase == "Complete"
+                            switch (it.object().status.phase) {
+                                case "Complete":
+                                    return true
+                                case "Error":
+                                    println("message: ${it.object().status.message}")
+                                    currentBuild.result = 'FAILURE'
+                                    return true
+                                case "Failed":
+                                    println("message: ${it.object().status.message}")
+                                    currentBuild.result = 'FAILURE'
+                                    return true
+                                default:
+                                    return false
+                            }
                         }
                     }
 
-                    return new HashMap([names: newBuild.names(), buildConfigName: buildConfigName])
+
+                    if (newBuild) {
+                        newBuildObjectNames = newBuild.names()
+                    } else {
+                        newBuildObjectNames = ["bc/${buildConfigName}",
+                                               "is/${baseImageStreamName}",
+                                               "is/${buildConfigName}"]
+                    }
+
+                    return new HashMap([names: newBuildObjectNames, buildConfigName: buildConfigName])
                 }
                 finally {
-                    if (newBuild) {
-                        def result = newBuild.narrow("bc").logs()
-                        echo "status: ${result.status}"
-                        echo "${result.actions[0].cmd}"
+                    if (buildConfig) {
+                        def result = buildConfig.logs()
 
-                        if (result.status != 0) {
-                            echo "${result.out}"
-                            currentBuild.result = 'FAILURE'
-                        }
                         if(deleteBuild) {
                             newBuild.delete()
                         }
+
+                        // After the build is complete clean up the builds
+                        builds.delete()
                     }
                 }
             }
