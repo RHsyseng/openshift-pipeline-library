@@ -1,4 +1,6 @@
 #!groovy
+import groovy.json.JsonSlurperClassic
+
 import java.util.UUID
 
 def call(Closure body) {
@@ -72,31 +74,18 @@ def call(Closure body) {
                             buildConfig.startBuild()
                         }
                         else {
-
                             newBuildRaw = openshift.raw("-o json",
                                     "new-build", "${image}${config.url}#${config.branch}",
                                     "--name=${name}",
                                     "--context-dir=${contextDir}",
                                     "${imageStream}", "--dry-run")
 
-                            newBuildMap = readJSON text: newBuildRaw.out
+                            baseImageStreamName = findBaseImageStream((String)(name), (String)(newBuildRaw.out))
 
-                            /* TODO: add check if the image stream exists */
-                            for (item in newBuildMap.items) {
-                                if( item.kind == 'ImageStream') {
-                                    if (item.metadata.name != name) {
-                                        baseImageStreamName = item.metadata.name
-
-                                        /* This is only needed when
-                                         * there is already an imagestream configured
-                                         * for the project.
-                                         */
-                                        if (openshift.selector('is', baseImageStreamName).exists()) {
-                                            image = "${openshift.project()}/${baseImageStreamName}~"
-                                            strategy = "--strategy=docker"
-                                        }
-                                    }
-                                }
+                            if (openshift.selector('is', baseImageStreamName).exists()) {
+                                println("openshift.project()")
+                                image = "${openshift.project()}/${baseImageStreamName}~"
+                                strategy = "--strategy=docker"
                             }
 
                             newBuild = openshift.newBuild("${image}${config.url}#${config.branch}",
@@ -152,6 +141,9 @@ def call(Closure body) {
 
                     return new HashMap([names: newBuildObjectNames, buildConfigName: buildConfigName])
                 }
+                catch(all) {
+                    println(all)
+                }
                 finally {
                     if (buildConfig) {
                         def result = buildConfig.logs()
@@ -159,7 +151,6 @@ def call(Closure body) {
                         if(deleteBuild) {
                             newBuild.delete()
                         }
-
                         // After the build is complete clean up the builds
                         builds.delete()
                     }
@@ -167,4 +158,22 @@ def call(Closure body) {
             }
         }
     }
+}
+
+@NonCPS
+String findBaseImageStream(String name, String newBuildRawOutput) {
+    String baseImageStreamName = ""
+    JsonSlurperClassic parser = new JsonSlurperClassic()
+
+    HashMap newBuildMap = (HashMap) parser.parseText(newBuildRawOutput)
+    parser = null
+
+    for (item in newBuildMap["items"]) {
+        if( item.kind == 'ImageStream') {
+            if (item["metadata"]["name"] != name) {
+                baseImageStreamName = item["metadata"]["name"]
+            }
+        }
+    }
+    return baseImageStreamName
 }
