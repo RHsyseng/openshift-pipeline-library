@@ -135,7 +135,6 @@ def call(Closure body) {
                         newBuildObjectNames = newBuild.names()
                     } else {
                         newBuildObjectNames = ["bc/${buildConfigName}",
-                                               "is/${baseImageStreamName}",
                                                "is/${buildConfigName}"]
                     }
 

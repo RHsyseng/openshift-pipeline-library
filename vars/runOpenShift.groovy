@@ -11,7 +11,12 @@ def call(Closure body) {
     boolean deletePod = config['deletePod'] ?: false
     def args = []
 
-    args << "${config.branch}"
+
+    String podName = config['name'] ?: ""
+    /* The name of the pod must be alphanumeric lowercase with a hyphen or period */
+    //def podName = config['branch'].replaceAll('_','-').toLowerCase()
+
+    args << "${podName}"
     args << "--image=${config.image}"
     args << "--restart=Never"
     args << "--image-pull-policy=Always"
@@ -33,12 +38,12 @@ def call(Closure body) {
                 try {
 
                     openshift.run(args)
-                    pod = openshift.selector("pod/${config.branch}")
+                    pod = openshift.selector("pod/${podName}")
 
                     timeout(10) {
                         pod.watch {
                             podObject = it.object()
-                            if (podObject.status.phase == 'Succeeded' || podObject.status.phase == 'Failed') {
+                            if (podObject.status.phase == 'Running' || podObject.status.phase == 'Succeeded' || podObject.status.phase == 'Failed') {
                                 return true
                             } else {
                                 return false
@@ -49,15 +54,11 @@ def call(Closure body) {
                 finally {
                     if (pod) {
                         podObject = pod.object()
-                        def exitCode = podObject.status.containerStatuses[0].state.terminated.exitCode
                         def result = pod.logs()
+                        //def exitCode = podObject.status.containerStatuses[0].state.terminated.exitCode
                         echo "status: ${result.status}"
-                        echo "${result.actions[0].cmd}"
+                        echo "output: ${result.out}"
 
-                        if (exitCode != 0) {
-                            echo "${result.out}"
-                            currentBuild.result = 'FAILURE'
-                        }
                         if (deletePod) {
                             pod.delete()
                         }
@@ -67,5 +68,3 @@ def call(Closure body) {
         }
     }
 }
-
-
